@@ -1,0 +1,66 @@
+{
+  "gate": "10B.5",
+  "status": "PASS",
+  "physical_15min_rows": 61340,
+  "hourly_joint_rows": 15335,
+  "duplicate_hourly_timestamps": 0,
+  "missing_rates": {
+    "price_error": 0.010955330942288882,
+    "load_error": 0.0,
+    "wind_on_error": 0.0,
+    "wind_off_error": 0.0,
+    "pv_error": 0.0
+  },
+  "summary": {
+    "price_error": {
+      "n": 15167,
+      "mean": 0.2264498582448739,
+      "std": 39.00068913639073,
+      "min": -415.57,
+      "max": 654.585,
+      "skewness": 0.9758524397972758,
+      "kurtosis": 24.622362840337203
+    },
+    "load_error": {
+      "n": 15335,
+      "mean": -36.227319204434295,
+      "std": 2528.2539323482238,
+      "min": -9328.0,
+      "max": 9321.5,
+      "skewness": 0.12662384106207814,
+      "kurtosis": 0.47294433723787455
+    },
+    "wind_on_error": {
+      "n": 15335,
+      "mean": 53.779420932507335,
+      "std": 1590.3584870701238,
+      "min": -12429.25,
+      "max": 9633.25,
+      "skewness": -0.2869817360526028,
+      "kurtosis": 3.633709820989696
+    },
+    "wind_off_error": {
+      "n": 15335,
+      "mean": -4.933295076622107,
+      "std": 767.5515657798976,
+      "min": -4778.75,
+      "max": 3323.25,
+      "skewness": -0.8460386146502857,
+      "kurtosis": 3.5157093012890583
+    },
+    "pv_error": {
+      "n": 15335,
+      "mean": 13.076241278121953,
+      "std": 1272.7309172684036,
+      "min": -9135.25,
+      "max": 7467.8200000000015,
+      "skewness": -0.11067316310528252,
+      "kurtosis": 6.676450077510358
+    }
+  },
+  "outputs": {
+    "physical_15min": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\calibration\\joint_physical_residuals_15min.csv",
+    "hourly_joint": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\calibration\\joint_residual_database_hourly.csv",
+    "correlation": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\calibration\\joint_residual_correlation.csv"
+  }
+}

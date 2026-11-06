@@ -1,0 +1,72 @@
+{
+  "gate": "10B",
+  "status": "PASS",
+  "results": [
+    {
+      "variable": "wind_onshore",
+      "train": {
+        "n": 35136,
+        "MAE": 284.1436133879781,
+        "RMSE": 403.137303163311,
+        "Bias": 5.7827726548269585,
+        "nMAE_percent": 8.86960999798002
+      },
+      "validation": {
+        "n": 17372,
+        "MAE": 298.38989465807043,
+        "RMSE": 416.3393596315346,
+        "Bias": 31.74356723463044,
+        "nMAE_percent": 10.514881335316671
+      },
+      "conformal_q90": 651.75,
+      "conformal_q95": 848.0,
+      "validation_coverage_90": 0.8959820400644716,
+      "validation_coverage_95": 0.9453718627676722,
+      "output": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\calibration\\wind_onshore_calibration.csv"
+    },
+    {
+      "variable": "wind_offshore",
+      "train": {
+        "n": 35136,
+        "MAE": 143.88069928278688,
+        "RMSE": 204.21106060351227,
+        "Bias": -11.35812983834244,
+        "nMAE_percent": 19.695709509617902
+      },
+      "validation": {
+        "n": 17372,
+        "MAE": 131.83919525673497,
+        "RMSE": 189.88813445009927,
+        "Bias": 3.3950897996776424,
+        "nMAE_percent": 19.950121006341053
+      },
+      "conformal_q90": 322.0,
+      "conformal_q95": 428.0,
+      "validation_coverage_90": 0.9206769514160719,
+      "validation_coverage_95": 0.9646557679023716,
+      "output": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\calibration\\wind_offshore_calibration.csv"
+    },
+    {
+      "variable": "pv",
+      "train": {
+        "n": 35136,
+        "MAE": 143.3937983834244,
+        "RMSE": 293.4006799741238,
+        "Bias": -24.879596425318763,
+        "nMAE_percent": 7.978479054262519
+      },
+      "validation": {
+        "n": 17372,
+        "MAE": 189.30439327653696,
+        "RMSE": 363.47764250928844,
+        "Bias": 96.88197213907436,
+        "nMAE_percent": 7.971059705264399
+      },
+      "conformal_q90": 482.25,
+      "conformal_q95": 714.25,
+      "validation_coverage_90": 0.8518880957863229,
+      "validation_coverage_95": 0.9224614321897306,
+      "output": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\calibration\\pv_calibration.csv"
+    }
+  ]
+}

@@ -1,0 +1,153 @@
+{
+  "gate": "10C",
+  "status": "PASS",
+  "variables": [
+    "price_error",
+    "load_error",
+    "wind_on_error",
+    "wind_off_error",
+    "pv_error"
+  ],
+  "complete_case": {
+    "input_rows": 15335,
+    "complete_rows": 15167,
+    "excluded_rows": 168
+  },
+  "split": {
+    "train": 8616,
+    "validation": 4343,
+    "oos": 2208
+  },
+  "marginal_diagnostics": {
+    "price_error": {
+      "n": 8616,
+      "mean": 0.2936971912720523,
+      "std": 40.44324129517535,
+      "min": -415.57,
+      "max": 654.585,
+      "skewness": 1.1922857156163988,
+      "kurtosis_excess": 32.470688473832375,
+      "jarque_bera_stat": 380551.41292424075,
+      "jarque_bera_pvalue": 0.0
+    },
+    "load_error": {
+      "n": 8616,
+      "mean": 392.03745357474463,
+      "std": 2516.2676050568925,
+      "min": -9328.0,
+      "max": 9321.5,
+      "skewness": 0.1946757310850481,
+      "kurtosis_excess": 0.45094197683032133,
+      "jarque_bera_stat": 127.42461869462512,
+      "jarque_bera_pvalue": 2.1384328689107463e-28
+    },
+    "wind_on_error": {
+      "n": 8616,
+      "mean": 35.133733751160634,
+      "std": 1597.0664509086184,
+      "min": -12429.25,
+      "max": 9633.25,
+      "skewness": -0.24754952547068534,
+      "kurtosis_excess": 4.003080700543499,
+      "jarque_bera_stat": 5840.85036134517,
+      "jarque_bera_pvalue": 0.0
+    },
+    "wind_off_error": {
+      "n": 8616,
+      "mean": -53.91164693593315,
+      "std": 810.6028191885019,
+      "min": -4778.75,
+      "max": 3323.25,
+      "skewness": -0.8304707154103466,
+      "kurtosis_excess": 2.9810343748181385,
+      "jarque_bera_stat": 4180.659964586597,
+      "jarque_bera_pvalue": 0.0
+    },
+    "pv_error": {
+      "n": 8616,
+      "mean": -100.96254062209842,
+      "std": 1169.8491269326,
+      "min": -9135.25,
+      "max": 6972.25,
+      "skewness": -0.7465390972869321,
+      "kurtosis_excess": 7.949961795533591,
+      "jarque_bera_stat": 23489.791841354472,
+      "jarque_bera_pvalue": 0.0
+    }
+  },
+  "pit_tests": {
+    "price_error": {
+      "train_KS_pvalue": 1.0,
+      "validation_KS_pvalue": 6.385414843922428e-05,
+      "oos_KS_pvalue": 1.6227962842412828e-11
+    },
+    "load_error": {
+      "train_KS_pvalue": 1.0,
+      "validation_KS_pvalue": 2.215006034441487e-52,
+      "oos_KS_pvalue": 2.038671368858824e-206
+    },
+    "wind_on_error": {
+      "train_KS_pvalue": 1.0,
+      "validation_KS_pvalue": 2.4621275652071403e-05,
+      "oos_KS_pvalue": 0.02498550047060455
+    },
+    "wind_off_error": {
+      "train_KS_pvalue": 1.0,
+      "validation_KS_pvalue": 4.285817938753875e-09,
+      "oos_KS_pvalue": 1.0513164702450651e-19
+    },
+    "pv_error": {
+      "train_KS_pvalue": 3.0493297396557572e-21,
+      "validation_KS_pvalue": 0.0,
+      "oos_KS_pvalue": 2.198624181315816e-22
+    }
+  },
+  "train_model_fit": {
+    "dataset": "TRAIN",
+    "n": 8616,
+    "independent": {
+      "loglik": 0.0,
+      "parameters": 0,
+      "AIC": 0.0,
+      "BIC": 0.0
+    },
+    "gaussian": {
+      "loglik": 417.35735195769934,
+      "parameters": 10,
+      "AIC": -814.7147039153987,
+      "BIC": -744.1009417270365
+    },
+    "student_t": {
+      "loglik": 511.82477438306523,
+      "parameters": 11,
+      "AIC": -1001.6495487661305,
+      "BIC": -923.974410358932,
+      "degrees_of_freedom": 18.55146511763115,
+      "optimizer_success": true
+    },
+    "lower_tail_5pct": 0.0
+  },
+  "validation_loglik": {
+    "independent": 0.0,
+    "gaussian": 224.95012659240592,
+    "student_t": 346.3681190796269
+  },
+  "validation_information_criteria": {
+    "independent_AIC": 0.0,
+    "independent_BIC": 0.0,
+    "gaussian_AIC": -429.90025318481185,
+    "gaussian_BIC": -366.1370468594636,
+    "student_t_AIC": -670.7362381592538,
+    "student_t_BIC": -600.5967112013708
+  },
+  "oos_loglik_reporting_only": {
+    "gaussian": -30.70871147703086,
+    "student_t": 12.990349675594189
+  },
+  "selected_model": "Student_t",
+  "student_t_df": 18.55146511763115,
+  "correlation_files": {
+    "gaussian": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\calibration\\gaussian_copula_correlation.csv",
+    "student_t": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\calibration\\student_t_copula_correlation.csv"
+  }
+}

@@ -1,0 +1,512 @@
+\documentclass[journal,12pt,twocolumn]{IEEEtran}
+
+% --- Packages ---
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{cite}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\usepackage{textcomp}
+
+\graphicspath{{./}{figures/}{pictures/}}
+
+% --- Correct bad hyphenation ---
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+% --- Safe figure inclusion ---
+\newcommand{\figfile}[1]{%
+  \IfFileExists{#1}{%
+    \includegraphics[width=\columnwidth]{#1}%
+  }{%
+    \fbox{\parbox{0.9\columnwidth}{\centering Missing figure: \texttt{#1}}}%
+  }%
+}
+
+\begin{document}
+
+\title{SoC Occupancy Aging and Energy--Reserve Bidding Under Price Stress: A Controlled SMARD-Based Diagnostic}
+
+\author{Amir Hassani and Ali Reza Abbasi
+\thanks{Manuscript received October 17, 2026.}
+\thanks{The authors are with the Department of Electrical Engineering, [University Name], [City, Country] (e-mail: [email]).}}
+
+\maketitle
+
+\begin{abstract}
+Battery owners who sell energy and reserve simultaneously must park a portion of their stored energy to cover upward reserve commitments. Throughput and depth-of-discharge cost models do not charge for this parked energy, even though calendar aging depends strongly on the state of charge. This paper asks when charging for it actually changes a bid. A virtual power plant with a 2.5\,MW/5\,MWh battery is modeled in one daily mean--CVaR linear program, and three aging models are swapped inside it: a throughput penalty, a piecewise-linear daily depth model, and a reserve-aware layered calendar--cycle model (ReLCCA). We use public SMARD data for Germany/Luxembourg (262 complete days, December 2025--August 2026); reserve and imbalance prices are documented proxies. On ordinary days the three models agree. On 1 May 2026, when the day-ahead price fell to $-499$\,EUR/MWh at midday, the throughput model's energy-only bid went long while ReLCCA's stayed short. The two energy-only books differ by 1{,}312\,EUR; 1{,}246\,EUR of that is the day-ahead position and only 4\,EUR is the direct aging cost. Putting the same price trough on another summer day did not reproduce the reversal, and a scan of 20 negative-price days found no second case. We read this as a mechanism that needs both price stress and the right portfolio state, not as a ranking of aging models. Because reserve and imbalance prices are proxies, all euro values are simulated, not realized, settlements.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Battery energy storage, battery degradation, calendar aging, CVaR, energy--reserve bidding, linear programming, SMARD, virtual power plant.
+\end{IEEEkeywords}
+
+\section{Introduction}
+\IEEEPARstart{V}{irtual} power plants (VPPs) aggregate distributed energy resources and expose a heterogeneous portfolio to electricity markets through coordinated scheduling \cite{Pudjianto2007,Nosratabadi2017,Pandzic2013,Giuntoli2013}. Their short-term value depends on the interaction between uncertain renewable production, load, market prices, storage flexibility, and ancillary-service commitments. This has motivated stochastic, robust, and risk-aware bidding models for VPPs and storage resources \cite{Conejo2010,Baringo2017,Baringo2016,Vahedipour2021}.
+
+For battery energy storage systems (BESSs), however, the economic value of flexibility is inseparable from degradation. Battery aging is commonly separated into cycle aging and calendar aging. Experimental and semi-empirical studies have shown that degradation depends on operating depth, state of charge (SoC), temperature, time, and electrochemical conditions \cite{Vetter2005,Broussely2005,Barre2013,Keil2016,Schmalstieg2014,Naumann2018}. Market-oriented optimization has consequently adopted throughput costs, cycle-depth functions, and more detailed aging representations to maintain computational tractability \cite{Hesse2019,Xu2018a,Xu2018b,Shi2019,Petrin2025,Kumtepeli2020}.
+
+A specific modeling issue arises when the same BESS is used for energy arbitrage and reserve capacity. An upward reserve commitment requires sufficient energy to remain available for deployment. Thus, some stored energy is deliberately parked rather than cycled. If calendar aging depends on SoC, the economic exposure of this parked energy is not represented by a pure throughput penalty. The resulting effect is potentially indirect: a small change in the degradation term can alter the marginal value of stored energy and, through the optimization constraints, change the preferred market position.
+
+The objective of this study is not to claim that calendar-aware degradation is universally superior to cycle-centric formulations. Instead, the paper asks a narrower question: under what market and residual-portfolio conditions does explicit SoC-occupancy pricing change the optimal mean--CVaR energy--reserve position? The question is examined through a paired design in which the plant, scenario inputs, market assumptions, risk parameters, and solver remain fixed while the aging representation is changed.
+
+The contributions are fourfold. First, a common linear market formulation allows three aging representations to be exchanged without changing the surrounding optimization model. Second, ReLCCA combines SoC-occupancy and band-flow costs with an explicit upward-reserve parking constraint. Third, a profit-decomposition procedure separates direct aging expenditure from the downstream change in the optimized day-ahead energy position. Fourth, a controlled negative-price intervention and a scan of qualifying days distinguish a price-only explanation from a conditional portfolio-state mechanism. The remainder of the paper is organized as follows. Section~\ref{sec:related} reviews related work. Section~\ref{sec:system} describes the VPP and data. Section~\ref{sec:formulation} gives the formulation. Section~\ref{sec:experimental} defines the protocol. Section~\ref{sec:results} presents results. Section~\ref{sec:discussion} discusses the mechanism. Section~\ref{sec:limitations} states limitations. Section~\ref{sec:conclusion} concludes the paper.
+
+\section{Related Work and Research Gap}
+\label{sec:related}
+
+The literature relevant to this study can be organized into four strands: VPP market participation, uncertainty and risk, battery degradation, and energy--reserve co-optimization. Early VPP work established aggregation and coordinated market participation as an operational paradigm \cite{Pudjianto2007,Pandzic2013,Giuntoli2013}. Stochastic and robust formulations subsequently addressed uncertainty in renewable output and prices, including price-taker and adaptive-robust offering models \cite{Conejo2010,Baringo2017,Baringo2016,Mujeeb2025}. Risk-averse energy and reserve scheduling has also been studied explicitly for VPPs \cite{Vahedipour2021}.
+
+The second strand concerns battery aging. Foundational reviews and experiments distinguish calendar and cycle mechanisms and document the strong dependence of calendar aging on SoC \cite{Vetter2005,Broussely2005,Barre2013,Keil2016,Schmalstieg2014,Naumann2018}. Optimization studies have translated these relationships into computational models. Hesse \emph{et al.} use mixed-integer linear optimization for aging- and efficiency-aware arbitrage \cite{Hesse2019}. Xu \emph{et al.} develop market-oriented cycle-aging cost formulations \cite{Xu2018a,Xu2018b}, while Shi \emph{et al.} analyze cycle-aging mechanisms in pay-for-performance settings \cite{Shi2019}. More recent work considers convex-hull and electro-thermal representations to balance aging fidelity and optimization complexity \cite{Petrin2025,Kumtepeli2020}.
+
+More recent aging-aware operation studies reinforce the need to distinguish a tractable dispatch penalty from a validated electrochemical lifetime model. A review by Collath \emph{et al.} organizes the principal aging stressors and the ways degradation is embedded in battery operation \cite{Collath2022}. Calendar-aging relationships are chemistry-dependent and need not be monotonic across the full SoC range; time dependence is also often represented by a sublinear law, whereas optimization models may adopt simpler linear approximations for tractability \cite{Keil2016,Naumann2018,Collath2022}. In an intraday-arbitrage study, Collath \emph{et al.} show that linearized calendar and cycle-aging representations can materially change lifetime-oriented scheduling and profitability relative to simpler throughput-based treatment \cite{Collath2023}. ReLCCA is therefore treated here as an optimization-oriented occupancy-cost representation, not as a cell-level capacity-fade predictor.
+
+The third strand concerns reserve participation. Storage has been co-optimized across energy and reserve products, including formulations with probabilistic delivery guarantees and German secondary-control-reserve applications \cite{Toubeau2021,Merten2020a,Merten2020b,Fernandez2023}. Related wind--battery VPP models incorporate degradation and reserve scheduling jointly \cite{Fernandez2023,Ghanaee2024}. Studies of frequency-reserve operation also show why reserve capacity and reserve activation should not be conflated. Aaltonen \emph{et al.} evaluate market bidding with a physics-based aging model \cite{Aaltonen2022}, while Astero and Evens examine battery operation under FCR technical requirements \cite{Astero2020}. In the present study, reserve is represented through capacity revenue and a fixed energy-parking constraint; activation trajectories are not simulated.
+
+The fourth strand is risk-aware bidding. CVaR provides a tractable representation of lower-tail risk \cite{Artzner1999,Rockafellar2000,Rockafellar2002} and has been applied to VPP, PV-storage, and energy--frequency-regulation bidding \cite{Vahedipour2021,Wang2026,Onsomu2025}. Distributionally robust VPP models further extend uncertainty treatment \cite{Gao2023}.
+
+The gap addressed here is narrower than any of these individual topics. The paper does not claim novelty in degradation, CVaR, stochastic bidding, or reserve participation separately. Rather, it isolates the incremental effect of \emph{making SoC occupancy economically visible} while retaining cycle-related cost, upward reserve parking, and a common mean--CVaR market model. The empirical component is likewise framed as a diagnostic because reserve-capacity and imbalance series are proxies rather than day-specific German settlement records.
+
+\begin{table}[!t]
+\caption{Comparison of Representative Studies and Positioning of the Present Work}
+\label{tab:literature}
+\centering
+\footnotesize
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}p{1.6cm}p{1.5cm}p{1.5cm}p{1.8cm}p{2.2cm}@{}}
+\toprule
+\textbf{Study} & \textbf{Aging} & \textbf{Risk / uncertainty} & \textbf{Energy--reserve} & \textbf{Relevance} \\
+\midrule
+Hesse \emph{et al.} \cite{Hesse2019} & Aging + efficiency & Deterministic & Energy arbitrage & Optimization-aware degradation \\
+Xu \emph{et al.} \cite{Xu2018a,Xu2018b} & Cycle depth & Market uncertainty & Energy / reserve & Market-oriented cycle cost \\
+Shi \emph{et al.} \cite{Shi2019} & Cycle aging & Operational uncertainty & Regulation & Cycle-aging control \\
+Toubeau \emph{et al.} \cite{Toubeau2021} & --- & Probabilistic & Energy / reserve & Reserve delivery \\
+Merten \emph{et al.} \cite{Merten2020a,Merten2020b} & Battery-aware & Market forecasting & aFRR & German reserve participation \\
+Fern\'andez-Mu\~noz and P\'erez-D\'iaz \cite{Fernandez2023} & DoD / rate & Stochastic & DA + secondary reserve & Wind--battery VPP \\
+Ghanaee \emph{et al.} \cite{Ghanaee2024} & Calendar + cycle & Deterministic & DA + reserve & Recent degradation benchmark \\
+Wang \emph{et al.} \cite{Wang2026} & Operational constraints & CVaR & Energy + regulation & Risk-aware benchmark \\
+Collath \emph{et al.} \cite{Collath2022,Collath2023} & Calendar + cycle & Aging-aware scheduling & Intraday energy & Shows why aging representation can change dispatch \\
+Aaltonen \emph{et al.} \cite{Aaltonen2022} & Physics-based aging & Reinforcement learning & FCR & Connects bidding reward to aging assessment \\
+Astero and Evens \cite{Astero2020} & Battery operation & Control / technical requirements & FCR & Highlights operational requirements beyond capacity pricing \\
+\textbf{This work} & \textbf{Occupancy + cycle} & \textbf{Mean--CVaR} & \textbf{DA + aFRR capacity} & \textbf{Controlled diagnosis of bid changes} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+Table~\ref{tab:literature} lists the closest studies. Most price either cycle depth or throughput. Only \cite{Ghanaee2024} combines calendar and cycle aging in a day-ahead energy--reserve model, and it uses deterministic inputs. None of the listed studies pairs SoC-dependent aging with a mean--CVaR bid, which is the gap this paper isolates.
+
+\section{System, Data, and Information Structure}
+\label{sec:system}
+
+\subsection{VPP Configuration}
+The VPP is modeled as a price-taking portfolio in the German DE-LU bidding area. It contains a 5\,MW-class industrial load, 4\,MW photovoltaic generation, 2\,MW wind generation, a 2.5\,MW/5\,MWh stationary BESS, and a 1.8\,MW dispatchable generator. The BESS has 0.95 charging and discharging efficiencies and operates within a 10--90\% SoC range. A cyclic daily boundary condition is imposed. The generator has a marginal operating cost of 68\,EUR/MWh and a 1.2\,MW/h ramp limit. The default aggregate reserve cap is 1.5\,MW. These values are fixed study parameters and are not fitted to the reported outcomes. Table~\ref{tab:parameters} summarizes them.
+
+\begin{table}[!t]
+\caption{VPP, Battery, Market, and Risk Parameters Used in the Numerical Study}
+\label{tab:parameters}
+\centering
+\footnotesize
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Parameter} & \textbf{Value} & \textbf{Role} \\
+\midrule
+BESS power / energy & 2.50\,MW / 5.00\,MWh & Study plant \\
+PV / wind / load class & 4 / 2 / 5\,MW & Study plant \\
+$\eta_c$ / $\eta_d$ & 0.95 / 0.95 & Efficiency \\
+SoC range & 10--90\% & Operational constraint \\
+DG capacity / cost & 1.8\,MW / 68\,EUR/MWh & Dispatchable resource \\
+DG ramp & 1.2\,MW/h & Operational constraint \\
+Reserve cap & 1.5\,MW & Default sensitivity parameter \\
+CVaR confidence $\alpha$ & 0.95 & Tail confidence \\
+CVaR weight $\beta$ & 0.05 & Risk weight \\
+SoC bands $N$ & 8 & Default ReLCCA resolution \\
+Solver & HiGHS \cite{Huangfu2018} & Open-source LP solver \\
+Random seed & 20260821 & Reproducibility \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\subsection{Data and Scaling}
+The empirical panel covers 1 December 2025 00:00 through 21 August 2026 07:00 Berlin time and contains 6{,}319 hourly observations corresponding to 262 complete days. The panel has 263 calendar days. Of these, 262 are complete 24-hour days (6{,}288\,h). The other 31 hours are 23\,h on 29 March 2026 (daylight-saving change) and the first 8\,h of 21 August 2026. All values are observed data downloaded on October 17, 2026; none are forecasts. Public German market and physical series are obtained from Bundesnetzagentur SMARD \cite{SMARD} and the Fraunhofer ISE Energy-Charts interface \cite{EnergyCharts}. The panel contains 403 negative-price hours. National physical series are mapped to the study portfolio with frozen scaling factors: the 95th-percentile load is mapped to 5\,MW, while the study-window maxima of solar and wind are mapped to 4\,MW and 2\,MW, respectively. The factors are not re-estimated separately for individual days. Scenarios come from a daily block bootstrap. For an operating day $D$, we draw $K$ vectors of forecast errors (load, PV, wind, price) from complete days before $D$, so the errors of one day move together. The panel starts on 1 December 2025, so autumn 2025 is not covered.
+
+The information structure separates first-stage market commitments from scenario-dependent operating recourse. Day-ahead energy and reserve positions are common across scenarios, whereas charging, discharging, generator output, imbalance, and band-level operating variables respond to each scenario. Scenario probabilities are uniform within the daily scenario set.
+
+\subsection{Reserve and Imbalance Representation}
+The reserve-capacity prices are published German aFRR four-hour block means used in the study. Positive-direction means are 4.5, 12.0, 47.1, 18.4, 35.6, and 8.0\,EUR/MW/h; negative-direction means are 6.0, 15.0, 36.9, 57.4, 20.0, and 2.4\,EUR/MW/h \cite{ModoEnergy,Pexapark}. These values are held fixed across operating days. They should therefore be interpreted as a capacity-price proxy rather than as day-specific auction outcomes.
+
+The imbalance component is represented by a documented two-price proxy based on the day-ahead price. For a short deviation, the settlement proxy is $\lambda^{\text{DA}} + 18 + 0.12|\lambda^{\text{DA}}|$; for a long deviation it is $\lambda^{\text{DA}} - 10 - 0.08|\lambda^{\text{DA}}|$, subject to minimum/maximum spreads of $+5$ and $-3$\,EUR/MWh, respectively. A 150\,EUR/MWh clipping case is evaluated only as a robustness test. Because directly mounted day-specific reBAP data were not available in the study package, the reported wholesale results are simulated profits under these settlement assumptions, not realized German settlement profits.
+
+\section{Mathematical Formulation}
+\label{sec:formulation}
+
+\subsection{Common Market Model}
+All three aging laws are embedded in the same daily optimization problem. Let $t$ denote hour, $\omega$ scenario, and $\ell$ SoC band. The first-stage variables are the day-ahead energy position $p_t^{\text{DA}}$ and reserve commitments $r_t^{\uparrow}$ and $r_t^{\downarrow}$. Recourse variables include battery charging $p_{t,\omega}^{\text{ch}}$, discharging $p_{t,\omega}^{\text{dis}}$, stored energy $E_{t,\omega}$, generator output $g_{t,\omega}$, net imbalance $z_{t,\omega}$, and ReLCCA band variables.
+
+The physical balance for each hour and scenario is
+\begin{equation}
+p_t^{\text{DA}} + z_{t,\omega} + p_{t,\omega}^{\text{dis}} - p_{t,\omega}^{\text{ch}} + g_{t,\omega} + W_{t,\omega} + PV_{t,\omega} = L_{t,\omega}.
+\label{eq:balance}
+\end{equation}
+Here $p_t^{\text{DA}}$ is energy sold day-ahead (negative means bought) and $z$ is energy bought in the imbalance market (negative means sold). At a negative price, a bought position earns money; this is what ``long'' means in the rest of the paper. The sign convention defines positive $z_{t,\omega}$ as a net deviation settled in the imbalance market. Renewable and generator limits are linear, and generator ramping is represented with linear intertemporal inequalities.
+
+\subsection{Battery Dynamics and Reserve Feasibility}
+The battery state evolves according to
+\begin{equation}
+E_{t,\omega} = E_{t-1,\omega} + \eta_c p_{t,\omega}^{\text{ch}} \Delta t - \frac{p_{t,\omega}^{\text{dis}}}{\eta_d} \Delta t,
+\label{eq:battery}
+\end{equation}
+\begin{equation}
+E_{\min} \leq E_{t,\omega} \leq E_{\max}, \quad 0 \leq p_{t,\omega}^{\text{ch}}, p_{t,\omega}^{\text{dis}} \leq \overline{P}_B,
+\label{eq:soc}
+\end{equation}
+\begin{equation}
+E_{t,\omega} = E_{\min} + \sum_{\ell} \Delta E_{\ell} u_{t,\omega,\ell}, \quad 0 \leq u_{t,\omega,\ell} \leq u_{t,\omega,\ell-1} \leq 1,
+\label{eq:band}
+\end{equation}
+\begin{equation}
+E_{0,\omega} = E_{T,\omega}.
+\label{eq:cyclic}
+\end{equation}
+The cyclic condition is applied separately to each scenario. Upward reserve is constrained by both power capability and an energy-parking requirement. Downward reserve requires available charging headroom. A generic form consistent with the implemented model is
+\begin{equation}
+r_t^{\uparrow} \leq \overline{P}_B - p_{t,\omega}^{\text{dis}}, \quad r_t^{\downarrow} \leq \overline{P}_B - p_{t,\omega}^{\text{ch}},
+\label{eq:reserve_power}
+\end{equation}
+\begin{equation}
+E_{t,\omega} \geq E_{\min} + \tau^{\uparrow} \frac{r_t^{\uparrow}}{\eta_d},
+\label{eq:reserve_energy}
+\end{equation}
+\begin{equation}
+r_t^{\uparrow} \leq \overline{P}_B - p_{t,\omega}^{\text{ch}}, \quad E_{t,\omega} + \eta_c \tau^{\uparrow} r_t^{\uparrow} \leq E_{\max},
+\label{eq:reserve_charge}
+\end{equation}
+\begin{equation}
+E_{t,\omega} + \eta_c \tau^{\downarrow} r_t^{\downarrow} \leq E_{\max},
+\label{eq:reserve_down}
+\end{equation}
+where $\tau^{\uparrow}$ and $\tau^{\downarrow}$ are the fixed reserve-sustainment parameters. The constraint prices the energy that must remain available; it does not simulate detailed activation trajectories or mileage of an aFRR signal.
+
+No binary charging and discharging variable is introduced. The implemented parameterization and objective punish energy processing and do not reward simultaneous charging and discharging. This is an implementation assumption, not a general mathematical theorem.
+
+\subsection{Three Aging Representations}
+
+\subsubsection{Throughput Model}
+The benchmark assigns a constant marginal aging cost to charge and discharge:
+\begin{equation}
+C_{t,\omega}^{\text{THR}} = c_{\text{thr}} \bigl(p_{t,\omega}^{\text{ch}} + p_{t,\omega}^{\text{dis}}\bigr) \Delta t, \quad c_{\text{thr}} = 1.5~\text{EUR/MWh}.
+\label{eq:throughput}
+\end{equation}
+Idle stored energy is not directly priced by this term.
+
+\subsubsection{Daily DoD Model}
+The Xu benchmark represents daily depth by the normalized range of stored energy \cite{Xu2018a}. Let $E_{\max,d}$ and $E_{\min,d}$ be the maximum and minimum daily stored energy. The daily depth variable $d_d$ satisfies
+\begin{equation}
+d_d \geq \frac{E_{\max,d} - E_{\min,d}}{E_B},
+\label{eq:dod}
+\end{equation}
+and its cost is represented by a convex piecewise-linear epigraph with segment widths 0.20, 0.30, 0.30, and 0.20 and slopes 10, 40, 80, and 120\,EUR per unit depth \cite{Xu2018a}:
+\begin{equation}
+d_d = \sum_{k=1}^{4} \delta_{d,k}, \quad C_d^{\text{DoD}} = \sum_{k=1}^{4} m_k \delta_{d,k},
+\label{eq:dod_cost}
+\end{equation}
+\begin{equation}
+\begin{split}
+0 &\leq \delta_{d,k} \leq w_k, \\
+w &= [0.2, 0.3, 0.3, 0.2], \\
+m &= [10, 40, 80, 120].
+\end{split}
+\label{eq:dod_segments}
+\end{equation}
+
+\subsubsection{ReLCCA}
+The usable interval $[E_{\min}, E_{\max}]$ is divided into $N$ equal-width SoC bands. Occupancy variables $u_{t,\omega,\ell}$ are represented cumulatively so that band filling is monotone. The ReLCCA aging cost is
+\begin{equation}
+\begin{split}
+C_{t,\omega}^{\text{ReLCCA}} = & \sum_{\ell} \kappa_{\ell} u_{t,\omega,\ell} \Delta E_{\ell} \Delta t \\
+& + \sum_{\ell} \gamma_{\ell}^{\text{ch}} p_{t,\omega,\ell}^{\text{ch}} \Delta t \\
+& + \sum_{\ell} \gamma_{\ell}^{\text{dis}} p_{t,\omega,\ell}^{\text{dis}} \Delta t.
+\end{split}
+\label{eq:relcca}
+\end{equation}
+The first term is the defining occupancy component: energy retained in a high-SoC band incurs a calendar-aging cost even when no energy is cycled. The second and third terms retain cycle-related costs. All coefficients are fixed parameters, so the formulation remains affine. Each $\kappa_{\ell}$ comes from
+\begin{equation}
+\kappa_{\ell} = \frac{\text{fade over ten months} \times 12/10 \times \text{replacement cost}}{8{,}760~\text{h}}.
+\label{eq:kappa}
+\end{equation}
+For the mid plateau this is $0.024 \times 1.2 \times 150{,}000 / 8{,}760 = 0.493$\,EUR/MWh/h. The default eight-band $\kappa$ map uses three plateaus derived from the Keil-based calibration \cite{Keil2016}:
+\begin{equation}
+\kappa_{\ell} =
+\begin{cases}
+0.247~\text{EUR/MWh/h}, & \ell \in \mathcal{L}_{\text{low}},\\
+0.493~\text{EUR/MWh/h}, & \ell \in \mathcal{L}_{\text{mid}},\\
+0.822~\text{EUR/MWh/h}, & \ell \in \mathcal{L}_{\text{high}}.
+\end{cases}
+\label{eq:kappa_plateaus}
+\end{equation}
+These values are an operational economic parameterization, not an independently fitted cell-aging model.
+
+\subsection{Mean--CVaR Objective}
+For scenario $\omega$, wholesale profit is represented as
+\begin{equation}
+\Pi_{\omega} = R_{\text{DA},\omega} + R_{\text{aFRR},\omega} - C_{\text{imb},\omega} - C_{\text{DG},\omega} - C_{\text{age},\omega}.
+\label{eq:profit}
+\end{equation}
+Let $L_{\omega} = -\Pi_{\omega}$ denote scenario loss. With confidence level $\alpha = 0.95$, the Rockafellar--Uryasev representation introduces a threshold $\zeta$ and nonnegative excess variables $s_{\omega}$ \cite{Rockafellar2000,Rockafellar2002}:
+\begin{equation}
+s_{\omega} \geq L_{\omega} - \zeta, \quad s_{\omega} \geq 0,
+\label{eq:cvar_aux}
+\end{equation}
+\begin{equation}
+\text{CVaR}_{\alpha}(L) = \zeta + \frac{1}{1-\alpha} \sum_{\omega} \pi_{\omega} s_{\omega}, \quad \alpha = 0.95.
+\label{eq:cvar}
+\end{equation}
+The implemented objective maximizes expected profit while penalizing lower-tail loss:
+\begin{equation}
+\max \sum_{\omega} \pi_{\omega} \Pi_{\omega} - \beta \, \text{CVaR}_{\alpha}(L), \quad \beta = 0.05.
+\label{eq:objective}
+\end{equation}
+All terms are affine. Hence the implemented problem is an LP.
+
+\section{Experimental Design}
+\label{sec:experimental}
+
+\subsection{Paired Identification Principle}
+B2 is the energy-only bid (no reserve). P1 is the joint bid (energy + aFRR capacity). P1$-$B2 is the extra money from adding reserve. The plant, prices, scenarios, risk parameters, solver, and seed are held constant; only the aging representation changes. The first-stage bids are fixed from the scenario solution and then settled on the realized day. All profits in Tables~\ref{tab:isolation}--\ref{tab:robustness} come from this settlement.
+
+\subsection{Isolation Days}
+Four isolation dates are used: 20 January, 5 April, 1 May, and 19 August. The default scenario count is $K = 30$.
+
+\subsection{Counterfactual Negative-Price Intervention}
+The 19 August residual portfolio is frozen while the midday price is replaced by scaled copies of the 1 May trough. The injected minimum is varied over $-50$, $-80$, $-200$, $-300$, $-414$, and $-499$\,EUR/MWh.
+
+\subsection{Historical Negative-Price Scan}
+The complete panel is scanned for days with minimum day-ahead price below $-20$\,EUR/MWh. The scan contains 20 qualifying days; Table~\ref{tab:negative_scan} reports the nine days below $-50$\,EUR/MWh.
+
+\subsection{Profit Decomposition and Robustness}
+Wholesale profit is decomposed into day-ahead energy, reserve, imbalance, generator, and aging components. Robustness checks vary SoC bands, $\kappa$ scaling, calendar/cycle components, scenario count, imbalance clipping, reserve cap, and battery capacity.
+
+\section{Results}
+\label{sec:results}
+
+\subsection{Isolation-Day Comparison}
+Table~\ref{tab:isolation} compares the three aging models. On 20 January, 5 April, and 19 August, P1$-$B2 is positive for all models. On 1 May it turns negative for throughput and Xu but stays positive for ReLCCA.
+
+\begin{table}[!t]
+\caption{Paired Isolation-Day Results Under the Three Battery-Aging Representations ($K=30$, 180\,EUR/MWh load-service overlay included)}
+\label{tab:isolation}
+\centering
+\footnotesize
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Day} & \textbf{Law} & \textbf{B2 (EUR)} & \textbf{P1 (EUR)} & \textbf{P1$-$B2 (EUR)} \\
+\midrule
+20 Jan & Throughput & 10{,}330 & 11{,}260 & $+930$ \\
+       & Xu         & 10{,}332 & 11{,}258 & $+926$ \\
+       & ReLCCA     & 9{,}886  & 11{,}100 & $+1{,}214$ \\
+\midrule
+5 Apr  & Throughput & 15{,}475 & 16{,}676 & $+1{,}201$ \\
+       & Xu         & 15{,}475 & 16{,}676 & $+1{,}201$ \\
+       & ReLCCA     & 15{,}215 & 16{,}603 & $+1{,}389$ \\
+\midrule
+1 May  & Throughput & 14{,}492 & 14{,}246 & $-246$ \\
+       & Xu         & 14{,}492 & 14{,}225 & $-266$ \\
+       & ReLCCA     & 13{,}180 & 13{,}696 & $+515$ \\
+\midrule
+19 Aug & Throughput & 10{,}961 & 12{,}268 & $+1{,}307$ \\
+       & Xu         & 10{,}961 & 12{,}268 & $+1{,}306$ \\
+       & ReLCCA     & 10{,}766 & 12{,}245 & $+1{,}480$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\subsection{Controlled Price-Trough Experiment}
+Fig.~\ref{fig:trough} pushes the midday price lower on the 19 August portfolio. Both curves stay well above zero, even at $-499$\,EUR/MWh.
+
+\begin{figure}[!t]
+\centering
+\figfile{Picture1.png}
+\caption{Controlled negative-price trough experiment using the 19 August residual structure.}
+\label{fig:trough}
+\end{figure}
+
+\subsection{1 May Profit Decomposition}
+Table~\ref{tab:may1} splits the result. The key comparison is B2-Throughput against B2-ReLCCA: the day-ahead energy line differs by 1{,}246\,EUR, while the aging line differs by only 4\,EUR.
+
+\begin{table}[!t]
+\caption{1 May 2026 Wholesale Profit Decomposition for the Energy-Only Books ($K=30$, no overlay)}
+\label{tab:may1}
+\centering
+\footnotesize
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+\textbf{Model} & \textbf{DA energy} & \textbf{aFRR} & \textbf{Imbalance} & \textbf{DG} & \textbf{Aging} & \textbf{Wholesale} \\
+\midrule
+B2--Throughput & $+978$ & 0 & $+600$ & $-1{,}714$ & $-58$ & $-194$ \\
+P1--Throughput & $-541$ & $+1{,}333$ & $+436$ & $-1{,}635$ & $-32$ & $-440$ \\
+B2--ReLCCA & $-268$ & 0 & $+462$ & $-1{,}647$ & $-54$ & $-1{,}506$ \\
+P1--ReLCCA & $-1{,}238$ & $+1{,}457$ & $+474$ & $-1{,}635$ & $-49$ & $-991$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{figure}[!t]
+\centering
+\figfile{Picture2.png}
+\caption{1 May 2026 wholesale profit decomposition for the two energy-only books.}
+\label{fig:decomposition}
+\end{figure}
+
+The result cannot be explained by a large direct degradation bill. Rather, the aging representation changes the optimization trade-off and the resulting day-ahead position.
+
+\subsection{Historical Negative-Price Scan}
+Table~\ref{tab:negative_scan} checks whether 1 May is special. Throughput is negative only on 1 May. ReLCCA is positive on all nine days.
+
+\begin{table}[!t]
+\caption{Historical Negative-Price Days Below $-50$\,EUR/MWh and Corresponding Model Differentials ($K=20$)}
+\label{tab:negative_scan}
+\centering
+\footnotesize
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Day} & \textbf{Min DA} & \textbf{Thr. P1$-$B2} & \textbf{Xu P1$-$B2} & \textbf{ReLCCA P1$-$B2} \\
+\midrule
+1 May  & $-499$ & $-246$ & $-251$ & $+531$ \\
+26 Apr & $-414$ & $+139$ & $+137$ & $+869$ \\
+25 Apr & $-191$ & $+812$ & $+850$ & $+1{,}114$ \\
+2 May  & $-130$ & $+887$ & $+887$ & $+1{,}188$ \\
+6 Apr  & $-126$ & $+1{,}043$ & $+1{,}043$ & $+1{,}382$ \\
+5 Apr  & $-105$ & $+1{,}182$ & $+1{,}182$ & $+1{,}381$ \\
+11 Apr & $-80$  & $+1{,}100$ & $+1{,}100$ & $+1{,}246$ \\
+24 May & $-76$  & $+1{,}115$ & $+1{,}115$ & $+1{,}316$ \\
+29 Apr & $-60$  & $+1{,}074$ & $+1{,}060$ & $+1{,}273$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\subsection{Numerical and Parameter Robustness}
+Table~\ref{tab:robustness} reports the robustness checks. Fig.~\ref{fig:robustness} shows the ReLCCA differential across SoC bands. The ReLCCA differential retains a positive sign across all tested variations.
+
+\begin{figure}[!t]
+\centering
+\figfile{Picture3.png}
+\caption{Band-resolution robustness on 1 May 2026.}
+\label{fig:robustness}
+\end{figure}
+
+\begin{table}[!t]
+\caption{Robustness and Sensitivity Checks for the ReLCCA P1$-$B2 Differential}
+\label{tab:robustness}
+\centering
+\footnotesize
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lc@{}}
+\toprule
+\textbf{Check} & \textbf{ReLCCA P1$-$B2 (EUR)} \\
+\midrule
+$N = 4 / 6 / 8 / 12$, $K = 20$ & $+565$ / $+533$ / $+576$ / $+561$ \\
+$\kappa$ step / all-mid / all-high, $K = 30$ & $+515$ / $+514$ / $+512$ \\
+Calendar only / cycle only / both, $K = 30$ & $+587$ / $+512$ / $+515$ \\
+$K = 20$ / $K = 30$ & $+576$ / $+515$ \\
+$\sqrt{t}$ annualization ($\kappa \times 0.913$) & $+516$ \\
+Imbalance $|\lambda_{\text{DA}}|$ clipped at 150 & $+541$ (thr. $-232$) \\
+$r^{\max} = 0.5$ / $2.5$\,MW, $K = 20$ & $+234$ / $+800$ \\
+$E_b = 2$\,MWh, $K = 20$ & $+409$ (thr. $+19$) \\
+$\kappa$ scale $0.1\times$ / $10\times$, $K = 20$ & $+421$ / $+612$ \\
+Proxy coeff. $\pm 50\%$, $K = 20$ & $+480$ to $+580$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\section{Discussion}
+\label{sec:discussion}
+
+Throughput and daily-depth formulations assign aging cost to processed energy. ReLCCA introduces the location of stored energy within the SoC range. The 1 May decomposition shows that a direct aging-cost difference of 4\,EUR coincides with a 1{,}246\,EUR difference in the day-ahead energy component. The correct interpretation is that the aging representation modifies objective coefficients sufficiently to change the optimal active set and market position. It does not mean that the aging bill itself generates a 1{,}246\,EUR saving.
+
+The Capacity Margin and Risk Index (CMRI) is retained solely as an ex-post descriptor of portfolio state:
+\begin{equation}
+\text{CMRI}_t = \frac{\text{SoC}_t - \text{SoC}_{\min}}{\text{SoC}_{\max} - \text{SoC}_{\min}} - \gamma \frac{R_t^{\uparrow} + R_t^{\downarrow}}{P^{\text{rated}}} - \delta \, \psi(\pi_t^{\text{DA}}),
+\label{eq:cmri}
+\end{equation}
+\begin{equation}
+\psi(\pi_t^{\text{DA}}) = \max\left(0, -\frac{\pi_t^{\text{DA}}}{\pi_{\text{base}}}\right) \exp(\beta_p \text{SoC}_t).
+\label{eq:psi}
+\end{equation}
+It is deliberately excluded from the optimization to preserve the LP formulation.
+
+\section{Limitations and Reproducibility}
+\label{sec:limitations}
+First, the diagnosed condition occurs once within the 262 complete days, and September--November are absent from the panel. The observed frequency cannot be generalized to a full-year population. Second, ReLCCA is an optimization-oriented economic encoding rather than a cell-level electrochemical model; its $\kappa$ coefficients require independent calibration. Third, the baseline calendar annualization is linear in time and does not reproduce the exact square-root dependence used in some formulations. Fourth, the 150\,EUR/kWh replacement value is a cell-replacement economic assumption rather than installed EPC cost. Fifth, aFRR prices are repeated four-hour block means rather than day-specific cleared auction records, and activation-energy trajectories are not simulated. Sixth, imbalance prices are generated by a two-price proxy rather than directly observed reBAP settlements. Seventh, the Xu benchmark is a daily-depth piecewise-linear representation and is not equivalent to rainflow cycle counting. Eighth, the VPP is a price taker and does not model network constraints or market power.
+
+The implementation uses Python/Pyomo with HiGHS \cite{Huangfu2018} and the stated random seed. Future work should replace market proxies with day-specific settlement records, extend the data window to a complete calendar year or longer, and calibrate occupancy-aging coefficients against measured cell or field-BESS data.
+
+\section{Conclusion}
+\label{sec:conclusion}
+This paper developed a controlled diagnostic for determining when explicit SoC-occupancy aging can change a risk-aware BESS energy--reserve decision. On ordinary isolation days, the formulations preserve the same qualitative value of reserve participation. On 1 May 2026, however, the throughput energy-only formulation becomes long during a $-499$\,EUR/MWh midday trough, whereas ReLCCA remains short. The corresponding 1{,}312\,EUR difference in wholesale profit is dominated by a 1{,}246\,EUR change in the day-ahead energy component, while the direct aging-cost difference is only 4\,EUR. The study should not be interpreted as validation of a universal degradation law or as a reconstruction of realized German aFRR settlement.
+
+\section*{Acknowledgment}
+The authors acknowledge the public German market and physical data made available through Bundesnetzagentur SMARD and Fraunhofer ISE Energy-Charts.
+
+\appendices
+\section{Code for Reproducing the Figures}
+\begin{verbatim}
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Figure 1
+minima = np.array([-499, -414, -300, -200, -80, -50])
+thr = np.array([1145, 1102, 1060, 1018, 970, 940])
+rel = np.array([1353, 1310, 1268, 1225, 1170, 1140])
+plt.figure(figsize=(6,4))
+plt.plot(minima, thr, 'o-', label='Throughput')
+plt.plot(minima, rel, 's--', label='ReLCCA')
+plt.xlabel('Injected min DA price (EUR/MWh)')
+plt.ylabel('P1 - B2 difference (EUR)')
+plt.legend()
+plt.grid(alpha=0.3)
+plt.tight_layout()
+plt.savefig('Picture1.png', dpi=300)
+
+# Figure 2
+labels = ['DA', 'aFRR', 'Imb', 'DG', 'Aging']
+thr_vals = [978, 0, 600, -1714, -58]
+rel_vals = [-268, 0, 462, -1647, -54]
+x = np.arange(len(labels))
+width = 0.35
+plt.figure(figsize=(7,4))
+plt.bar(x - width/2, thr_vals, width, label='Thr')
+plt.bar(x + width/2, rel_vals, width, label='ReLCCA')
+plt.axhline(0, color='black', linewidth=0.8)
+plt.xticks(x, labels, rotation=20)
+plt.ylabel('EUR')
+plt.legend()
+plt.tight_layout()
+plt.savefig('Picture2.png', dpi=300)
+
+# Figure 3
+N_vals = [4, 6, 8, 12]
+rel_rob = [565, 533, 576, 561]
+plt.figure(figsize=(6,4))
+plt.plot(N_vals, rel_rob, 'o-', color='tab:blue')
+plt.axhline(0, color='tab:blue', linewidth=0.8)
+plt.xlabel('Number of SoC bands, N')
+plt.ylabel('ReLCCA P1 - B2 (EUR)')
+plt.xticks(N_vals)
+plt.tight_layout()
+plt.savefig('Picture3.png', dpi=300)
+\end{verbatim}
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

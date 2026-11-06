@@ -1,0 +1,16 @@
+figure_id,description
+Fig01,Real forecast trajectories
+Fig02,Day-ahead calibrated price forecast
+Fig03,Calibrated forecast-error distributions
+Fig04,Kendall dependence matrix
+Fig05,Reduced scenario fan
+Fig06,Actual versus forecast load
+Fig07,Hourly load forecast error
+Fig08,MILP runtime versus scenario count
+Fig09,Optimization objective versus scenario count
+Fig10,Model objective comparison
+Fig11,Objective difference relative to deterministic model
+Fig12,Scenario quality versus scenario count
+Fig13,Scenario probability distribution
+Fig14,Real DA price distribution
+Fig15,Runtime versus model size

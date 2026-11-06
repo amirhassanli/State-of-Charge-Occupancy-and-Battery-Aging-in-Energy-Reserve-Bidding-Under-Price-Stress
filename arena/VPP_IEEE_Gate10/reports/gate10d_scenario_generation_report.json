@@ -1,0 +1,17 @@
+{
+  "gate": "10D.1",
+  "status": "PASS",
+  "random_seed": 20260817,
+  "n_scenarios": 5000,
+  "hours_per_scenario": 24,
+  "rows": 120000,
+  "student_t_df": 18.54638968527101,
+  "probability_per_scenario": 0.0002,
+  "probability_sum": 1.0000000000000002,
+  "temporal_structure": "IID hourly at Gate 10D.1; temporal validation/reconstruction is deferred to Gate 10D.2.",
+  "outputs": {
+    "scenarios": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\scenarios\\raw_5000_joint_hourly_scenarios.csv.gz",
+    "summary": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\scenarios\\raw_5000_scenario_summary.csv",
+    "correlation": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\scenarios\\raw_5000_scenario_correlation.csv"
+  }
+}

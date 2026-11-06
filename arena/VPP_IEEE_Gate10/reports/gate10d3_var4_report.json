@@ -1,0 +1,19 @@
+{
+  "gate": "10D.3B",
+  "status": "PASS",
+  "method": "Student-t latent-space VAR(4) with bootstrap innovations",
+  "n_scenarios": 5000,
+  "hours_per_scenario": 24,
+  "rows": 120000,
+  "student_t_df": 18.54639,
+  "var_order": 4,
+  "spectral_radius": 0.948457993121984,
+  "probability_sum": 1.0000000000000002,
+  "maximum_acf_error": 0.5750601200023531,
+  "outputs": {
+    "scenarios": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\scenarios\\temporal_coherent_5000_scenarios_VAR4.csv.gz",
+    "summary": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\scenarios\\temporal_coherent_VAR4_summary.csv",
+    "correlation": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\scenarios\\temporal_coherent_VAR4_correlation.csv",
+    "acf": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\scenarios\\temporal_coherent_VAR4_acf_validation.csv"
+  }
+}

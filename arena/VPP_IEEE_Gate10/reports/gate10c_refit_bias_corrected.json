@@ -1,0 +1,29 @@
+{
+  "gate": "10C.1",
+  "status": "PASS",
+  "selected_model": "Student_t",
+  "train": {
+    "rows": 8616,
+    "gaussian_loglik": 417.35741946979255,
+    "student_t_loglik": 511.87374906786863
+  },
+  "validation": {
+    "rows": 4343,
+    "gaussian_loglik": 224.95023461345957,
+    "student_t_loglik": 343.3264257822739,
+    "gaussian_AIC": -429.90046922691914,
+    "student_t_AIC": -664.6528515645477
+  },
+  "oos_reporting_only": {
+    "rows": 2208,
+    "gaussian_loglik": -30.708284790202484,
+    "student_t_loglik": 12.739171718241778
+  },
+  "student_t_df": 18.54638968527101,
+  "correlation_files": {
+    "gaussian": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\calibration\\gaussian_copula_correlation_bias_corrected.csv",
+    "student_t": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\calibration\\student_t_copula_correlation_bias_corrected.csv"
+  },
+  "bias_report": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\reports\\gate10c_bias_correction.json",
+  "corrected_database": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\calibration\\joint_residual_database_hourly_bias_corrected.csv"
+}

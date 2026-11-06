@@ -1,0 +1,14 @@
+Item,Value,Notes
+Bidding zone,DE-LU (Germany / Luxembourg),SMARD / Energy-Charts
+Data licence,"CC BY 4.0, Bundesnetzagentur | SMARD.de",unchanged republication
+DA price resolution (raw),"15 min, resampled to 1 h (mean)",EUR/MWh
+Study window (prices),2026-06-01 – 2026-08-21,1952 hourly samples
+Complete calendar days,81,24 hourly stamps
+DA price mean / std,113.19 / 69.62,EUR/MWh
+DA price min / max,-45.87 / 665.82,EUR/MWh
+Negative-price hours,8.0% of hours,study window
+Load / PV / wind forecasts,Day-ahead public-power forecasts,scaled to VPP ratings
+Operating day (Gate 10),2026-08-19,"weekday, complete actuals"
+Scenario history,"58 error days, K=50",daily block bootstrap
+VPP load reference,5.00 MW (p95 national scaled),sf_load=8.280e-05
+VPP PV / wind ratings,4.00 / 2.00 MW,peak-matched

@@ -1,0 +1,19 @@
+{
+  "gate": "10D.3C",
+  "status": "PASS",
+  "method": "Empirical moving block bootstrap",
+  "block_length_hours": 24,
+  "n_scenarios": 5000,
+  "rows": 120000,
+  "probability_sum": 1.0000000000000002,
+  "mean_acf_error": 0.2821167655499621,
+  "max_acf_error": 0.6531330330512182,
+  "seed": 20260817,
+  "interpretation": "Historical contiguous 24-hour blocks are resampled with replacement to preserve temporal and cross-variable dependence.",
+  "outputs": {
+    "scenarios": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\scenarios\\empirical_block_bootstrap_5000_scenarios.csv.gz",
+    "summary": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\scenarios\\empirical_block_bootstrap_summary.csv",
+    "correlation": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\scenarios\\empirical_block_bootstrap_correlation.csv",
+    "acf": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\scenarios\\empirical_block_bootstrap_acf_validation.csv"
+  }
+}

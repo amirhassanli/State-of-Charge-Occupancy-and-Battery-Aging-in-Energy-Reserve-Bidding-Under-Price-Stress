@@ -1,0 +1,6 @@
+﻿file,error,rows,columns,likely_time_columns,missing_cells
+germany_balancing_data\raw\afrr_20261020_203629_RESULT_OVERVIEW_CAPACITY_MARKET_mFRR_2021-01-01_2021-12-31.xlsx,"Excel file format cannot be determined, you must specify an engine manually.",,,,
+germany_balancing_data\raw\afrr_20261020_203629_RESULT_OVERVIEW_ENERGY_MARKET_aFRR_2021-01-01_2021-12-31.xlsx,"Excel file format cannot be determined, you must specify an engine manually.",,,,
+germany_balancing_data\raw\afrr_20261020_203629_RESULT_OVERVIEW_ENERGY_MARKET_mFRR_2021-01-01_2021-12-31.xlsx,"Excel file format cannot be determined, you must specify an engine manually.",,,,
+germany_balancing_data\raw\rebap_20261020_203628_reBAP_Punktewolke_2026-10-20_19-02-13.csv,,24768.0,"['Datum', 'Zeitzone', 'von', 'bis', 'reBAP (EUR/MWh)', 'NRV-Saldo (in MW)']","['Datum', 'Zeitzone']",1.0
+germany_balancing_data\raw\rebap_20261020_203629_reBAP_Histogramm_2026-10-20_19-05-52.csv,Could not parse CSV,,,,

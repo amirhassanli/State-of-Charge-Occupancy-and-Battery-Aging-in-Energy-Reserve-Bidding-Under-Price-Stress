@@ -1,0 +1,29 @@
+{
+  "gate": "10B.4",
+  "status": "PASS",
+  "point_forecast_model": "Hybrid",
+  "point_forecast_formula": "0.5*Lag24 + 0.5*Lag168",
+  "calibration_period": "TRAIN 2024",
+  "validation_period": "2025-01-01 to 2025-06-30",
+  "oos_period": "2025-07-01 to 2025-09-30",
+  "train_rows": 8784,
+  "validation_rows": 4343,
+  "oos_rows": 2208,
+  "conformal_q90": 53.33999999999999,
+  "conformal_q95": 67.765,
+  "validation": {
+    "coverage_90": 0.8678332949574027,
+    "coverage_95": 0.9313838360580244,
+    "miscoverage_90": -0.03216670504259733,
+    "miscoverage_95": -0.018616163941975516,
+    "mean_interval_width_90": 106.67999999999996,
+    "mean_interval_width_95": 135.52999999999994
+  },
+  "oos_reporting_only": {
+    "coverage_90": 0.9008152173913043,
+    "coverage_95": 0.9447463768115942,
+    "mean_interval_width_90": 106.67999999999998,
+    "mean_interval_width_95": 135.53
+  },
+  "output_file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\calibration\\da_price_calibrated_forecast.csv"
+}

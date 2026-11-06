@@ -1,0 +1,466 @@
+{
+  "gate": "10F.1",
+  "status": "MODEL_DISCOVERY_COMPLETE",
+  "search_root": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4",
+  "candidate_count": 25,
+  "executable_model_count": 7,
+  "top_candidates": [
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10f0_solver_integrity.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10f0_solver_integrity.py",
+      "extension": ".py",
+      "size_bytes": 18017,
+      "score": 216,
+      "keywords": [
+        "Pyomo",
+        "highspy",
+        "Binary",
+        "MILP",
+        "stochastic",
+        "scenario"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10f1_global_model_search.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10f1_global_model_search.py",
+      "extension": ".py",
+      "size_bytes": 9746,
+      "score": 201,
+      "keywords": [
+        "ConcreteModel",
+        "AbstractModel",
+        "Pyomo",
+        "highspy",
+        "SolverFactory",
+        "Objective(",
+        "Constraint(",
+        "Var(",
+        "Binary",
+        "Integers",
+        "MILP",
+        "Mixed-Integer",
+        "stochastic",
+        "rolling horizon",
+        "N-1",
+        "N−1",
+        "BESS",
+        "battery",
+        "dispatch group",
+        "dispatch_group",
+        "reserve",
+        "secondary reserve",
+        "intraday",
+        "day-ahead",
+        "demand response",
+        "DR",
+        "virtual power plant",
+        "VPP",
+        "profit",
+        "CVaR",
+        "scenario"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10f1_model_inventory.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10f1_model_inventory.py",
+      "extension": ".py",
+      "size_bytes": 6151,
+      "score": 103,
+      "keywords": [
+        "ConcreteModel",
+        "AbstractModel",
+        "Pyomo",
+        "highspy",
+        "SolverFactory",
+        "Var(",
+        "Binary",
+        "Integers",
+        "MILP",
+        "N-1",
+        "BESS",
+        "battery",
+        "reserve",
+        "demand response",
+        "DR",
+        "scenario"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10e_scenario_reduction.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10e_scenario_reduction.py",
+      "extension": ".py",
+      "size_bytes": 18777,
+      "score": 12,
+      "keywords": [
+        "MILP",
+        "stochastic",
+        "DR",
+        "scenario"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10d3_temporal_coherent_scenarios.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10d3_temporal_coherent_scenarios.py",
+      "extension": ".py",
+      "size_bytes": 16987,
+      "score": 12,
+      "keywords": [
+        "Var(",
+        "Integers",
+        "DR",
+        "scenario"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10d3_var4_temporal_scenarios.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10d3_var4_temporal_scenarios.py",
+      "extension": ".py",
+      "size_bytes": 16797,
+      "score": 12,
+      "keywords": [
+        "Var(",
+        "Integers",
+        "DR",
+        "scenario"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10d3c_block_bootstrap_scenarios.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10d3c_block_bootstrap_scenarios.py",
+      "extension": ".py",
+      "size_bytes": 12381,
+      "score": 12,
+      "keywords": [
+        "Integers",
+        "reserve",
+        "DR",
+        "scenario"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\validate_gate10a.py",
+      "relative_path": "VPP_IEEE_Gate10\\validate_gate10a.py",
+      "extension": ".py",
+      "size_bytes": 18921,
+      "score": 9,
+      "keywords": [
+        "reserve",
+        "day-ahead",
+        "DR"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10a2_information_firewall.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10a2_information_firewall.py",
+      "extension": ".py",
+      "size_bytes": 11732,
+      "score": 9,
+      "keywords": [
+        "reserve",
+        "intraday",
+        "DR"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10b_forecast_calibration.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10b_forecast_calibration.py",
+      "extension": ".py",
+      "size_bytes": 11730,
+      "score": 9,
+      "keywords": [
+        "reserve",
+        "intraday",
+        "DR"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\1.py",
+      "relative_path": "VPP_IEEE_Gate10\\1.py",
+      "extension": ".py",
+      "size_bytes": 8927,
+      "score": 9,
+      "keywords": [
+        "intraday",
+        "day-ahead",
+        "DR"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10c_copula_diagnostics.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10c_copula_diagnostics.py",
+      "extension": ".py",
+      "size_bytes": 24868,
+      "score": 6,
+      "keywords": [
+        "Objective(",
+        "DR"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10d2_scenario_validation.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10d2_scenario_validation.py",
+      "extension": ".py",
+      "size_bytes": 18430,
+      "score": 6,
+      "keywords": [
+        "DR",
+        "scenario"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10c_bias_correct_refit.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10c_bias_correct_refit.py",
+      "extension": ".py",
+      "size_bytes": 16303,
+      "score": 6,
+      "keywords": [
+        "Objective(",
+        "DR"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10d_generate_5000_scenarios.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10d_generate_5000_scenarios.py",
+      "extension": ".py",
+      "size_bytes": 12138,
+      "score": 6,
+      "keywords": [
+        "DR",
+        "scenario"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10d3c_correct_acf_validation.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10d3c_correct_acf_validation.py",
+      "extension": ".py",
+      "size_bytes": 7103,
+      "score": 6,
+      "keywords": [
+        "DR",
+        "scenario"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\save_gate10e_report.py",
+      "relative_path": "VPP_IEEE_Gate10\\save_gate10e_report.py",
+      "extension": ".py",
+      "size_bytes": 2167,
+      "score": 6,
+      "keywords": [
+        "MILP",
+        "scenario"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10b5_joint_residual_database.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10b5_joint_residual_database.py",
+      "extension": ".py",
+      "size_bytes": 16725,
+      "score": 3,
+      "keywords": [
+        "DR"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10b4_da_price_calibration.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10b4_da_price_calibration.py",
+      "extension": ".py",
+      "size_bytes": 12231,
+      "score": 3,
+      "keywords": [
+        "DR"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10b3_da_price_forecast.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10b3_da_price_forecast.py",
+      "extension": ".py",
+      "size_bytes": 9419,
+      "score": 3,
+      "keywords": [
+        "DR"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\download_load_forecast.py",
+      "relative_path": "VPP_IEEE_Gate10\\download_load_forecast.py",
+      "extension": ".py",
+      "size_bytes": 9375,
+      "score": 3,
+      "keywords": [
+        "DR"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\derive_load_forecast.py",
+      "relative_path": "VPP_IEEE_Gate10\\derive_load_forecast.py",
+      "extension": ".py",
+      "size_bytes": 6283,
+      "score": 3,
+      "keywords": [
+        "DR"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\convert_residual_forecast.py",
+      "relative_path": "VPP_IEEE_Gate10\\convert_residual_forecast.py",
+      "extension": ".py",
+      "size_bytes": 6264,
+      "score": 3,
+      "keywords": [
+        "DR"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\download_smard.py",
+      "relative_path": "VPP_IEEE_Gate10\\download_smard.py",
+      "extension": ".py",
+      "size_bytes": 6200,
+      "score": 3,
+      "keywords": [
+        "DR"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\check_load_forecast_consistency.py",
+      "relative_path": "VPP_IEEE_Gate10\\check_load_forecast_consistency.py",
+      "extension": ".py",
+      "size_bytes": 3030,
+      "score": 3,
+      "keywords": [
+        "DR"
+      ]
+    }
+  ],
+  "executable_candidates": [
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10f0_solver_integrity.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10f0_solver_integrity.py",
+      "extension": ".py",
+      "size_bytes": 18017,
+      "score": 216,
+      "keywords": [
+        "Pyomo",
+        "highspy",
+        "Binary",
+        "MILP",
+        "stochastic",
+        "scenario"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10f1_global_model_search.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10f1_global_model_search.py",
+      "extension": ".py",
+      "size_bytes": 9746,
+      "score": 201,
+      "keywords": [
+        "ConcreteModel",
+        "AbstractModel",
+        "Pyomo",
+        "highspy",
+        "SolverFactory",
+        "Objective(",
+        "Constraint(",
+        "Var(",
+        "Binary",
+        "Integers",
+        "MILP",
+        "Mixed-Integer",
+        "stochastic",
+        "rolling horizon",
+        "N-1",
+        "N−1",
+        "BESS",
+        "battery",
+        "dispatch group",
+        "dispatch_group",
+        "reserve",
+        "secondary reserve",
+        "intraday",
+        "day-ahead",
+        "demand response",
+        "DR",
+        "virtual power plant",
+        "VPP",
+        "profit",
+        "CVaR",
+        "scenario"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10f1_model_inventory.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10f1_model_inventory.py",
+      "extension": ".py",
+      "size_bytes": 6151,
+      "score": 103,
+      "keywords": [
+        "ConcreteModel",
+        "AbstractModel",
+        "Pyomo",
+        "highspy",
+        "SolverFactory",
+        "Var(",
+        "Binary",
+        "Integers",
+        "MILP",
+        "N-1",
+        "BESS",
+        "battery",
+        "reserve",
+        "demand response",
+        "DR",
+        "scenario"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10d3_temporal_coherent_scenarios.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10d3_temporal_coherent_scenarios.py",
+      "extension": ".py",
+      "size_bytes": 16987,
+      "score": 12,
+      "keywords": [
+        "Var(",
+        "Integers",
+        "DR",
+        "scenario"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10d3_var4_temporal_scenarios.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10d3_var4_temporal_scenarios.py",
+      "extension": ".py",
+      "size_bytes": 16797,
+      "score": 12,
+      "keywords": [
+        "Var(",
+        "Integers",
+        "DR",
+        "scenario"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10c_copula_diagnostics.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10c_copula_diagnostics.py",
+      "extension": ".py",
+      "size_bytes": 24868,
+      "score": 6,
+      "keywords": [
+        "Objective(",
+        "DR"
+      ]
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10c_bias_correct_refit.py",
+      "relative_path": "VPP_IEEE_Gate10\\gate10c_bias_correct_refit.py",
+      "extension": ".py",
+      "size_bytes": 16303,
+      "score": 6,
+      "keywords": [
+        "Objective(",
+        "DR"
+      ]
+    }
+  ],
+  "next_action": "Select the actual final MILP source before connecting K=100/50/30 scenarios."
+}

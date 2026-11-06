@@ -1,0 +1,36 @@
+{
+  "gate": "10B.3",
+  "status": "PASS",
+  "best_baseline": "Hybrid",
+  "validation_metrics": [
+    {
+      "n": 4343,
+      "MAE": 26.673549389822703,
+      "RMSE": 38.16545725791194,
+      "Bias": -0.42026824775500815,
+      "sMAPE_percent": 49.02775507707114,
+      "model": "Hybrid",
+      "period": "VALIDATION"
+    },
+    {
+      "n": 4343,
+      "MAE": 27.472003223578174,
+      "RMSE": 41.64181558458697,
+      "Bias": 0.22282063090029933,
+      "sMAPE_percent": 52.54251027540023,
+      "model": "Lag24",
+      "period": "VALIDATION"
+    },
+    {
+      "n": 4343,
+      "MAE": 35.06513469951646,
+      "RMSE": 50.32257478137636,
+      "Bias": -1.0633571264103152,
+      "sMAPE_percent": 59.209367215087084,
+      "model": "Lag168",
+      "period": "VALIDATION"
+    }
+  ],
+  "forecast_file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\calibration\\da_price_baseline_forecasts.csv",
+  "metrics_file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\reports\\gate10b3_da_price_baseline_metrics.csv"
+}

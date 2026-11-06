@@ -1,0 +1,67 @@
+\documentclass[journal]{IEEEtran}
+\usepackage{amsmath,amssymb,booktabs,graphicx,multirow}
+\title{AlocaBid: A Rolling-Horizon Stochastic MILP Framework for Optimal Bidding of Renewable VPPs in German Sequential Markets With Dispatch Groups and Asset-Level N--1 Reliability}
+\author{Amir Hassanli, Ali Reza Abbasi, Mehdi Nafar, Hossein Haghighat}
+\begin{document}\maketitle
+\begin{abstract}
+Virtual power plants must convert uncertain renewable generation, load, and market information into bids that are economically attractive and physically deliverable. AlocaBid is a rolling-horizon stochastic mixed-integer linear programming framework for renewable VPP bidding using German SMARD data. The framework combines sequential bidding, dispatch-group allocation, asset-level N--1 reserve deliverability, Student-$t$ copula uncertainty modeling, scenario reduction, and CVaR-based downside-risk control. A 5000-scenario joint pool is reduced to $K=30$, 50, and 100. At $K=100$, the proposed P1 path increases expected profit from EUR 198828.98 to EUR 200283.79 and reduces CVaR95 from EUR 88088.51 to EUR 85985.16 relative to B2, corresponding to 0.73\% higher expected profit and 2.39\% lower CVaR95. Runtime increases from 5.30 s to 13.77 s. The evidence therefore supports a modest risk--return improvement with a computational premium. The current realized-settlement layer is retained as a diagnostic; final common-calendar rolling OOS superiority and statistical significance are not claimed until the corresponding database is populated.
+\end{abstract}
+\begin{IEEEkeywords}Virtual power plant, stochastic MILP, rolling horizon, day-ahead market, secondary reserve, Student-$t$ copula, CVaR, scenario reduction, dispatch groups, N--1 reliability, SMARD.\end{IEEEkeywords}
+
+\section{Introduction}
+Renewable penetration increases both the opportunity and uncertainty faced by virtual power plants (VPPs). A VPP must coordinate heterogeneous generation, storage, and flexible resources while committing market positions before delivery-period uncertainty is fully resolved. Sequential commitments further reduce the flexibility available to subsequent decisions. A practical bidding framework must therefore combine uncertainty modeling, chronological commitment, reserve deliverability, and tractable optimization.
+
+AlocaBid addresses this problem through a rolling-horizon stochastic MILP. The model is explicitly neither bi-level nor two-stage. Seven operational stages are represented, and previously committed flexibility is carried into later stages as an irrevocable state. Dispatch groups permit flexible allocation of heterogeneous assets, while an asset-level N--1 condition limits sold reserve to the flexibility that survives the loss of the largest committed resource.
+
+The main contributions are: (i) a rolling-horizon stochastic MILP for sequential VPP bidding; (ii) dispatch-group allocation with explicit N--1 reserve deliverability; (iii) a real-data uncertainty pipeline based on SMARD forecast errors and a Student-$t$ copula; (iv) scenario reduction from 5000 joint scenarios to compact sets; and (v) CVaR95 risk control with auditable B0, B2, and P1 comparisons.
+
+\section{Problem Definition and Architecture}
+The information firewall separates pre-bid information from delivery-day realizations. Forecast errors are defined as
+\begin{equation}e^X_t=X^{actual}_t-X^{forecast}_t.\end{equation}
+The rolling-horizon state contains flexibility already sold in previous stages. If $S^{prev}_{gt}$ is previously committed flexibility and $F_{gt}$ is current available flexibility,
+\begin{equation}R_{gt}+S^{prev}_{gt}\le F_{gt}.\end{equation}
+For dispatch group $g$, the N--1 deliverability condition is
+\begin{equation}R_{gt}\le F_{gt}-F_{a_g^\star gt},\end{equation}
+where $a_g^\star$ is the largest committed asset in the group.
+
+\section{Mathematical Formulation}
+For scenario $\omega$, profit is represented as
+\begin{equation}\Pi_\omega=R_\omega^{DA}+R_\omega^{SR}-C_\omega^{DG}-C_\omega^{BESS}-C_\omega^{pen}.\end{equation}
+The stochastic objective is
+\begin{equation}\max E[\Pi]=\max\sum_\omega p_\omega\Pi_\omega.\end{equation}
+For P1,
+\begin{equation}\max E[\Pi]-\lambda CVaR_\alpha(L),\qquad L_\omega=-\Pi_\omega,
+\end{equation}
+with
+\begin{equation}CVaR_\alpha(L)=\eta+\frac{1}{1-\alpha}\sum_\omega p_\omega u_\omega,\end{equation}
+\begin{equation}u_\omega\ge L_\omega-\eta,\quad u_\omega\ge0.\end{equation}
+The locked P1 point is $\lambda=0.02$, $\alpha=0.95$. Battery dynamics are
+\begin{equation}E_{t+1}=E_t+\eta_{ch}P_t^{ch}-P_t^{dis}/\eta_{dis}.\end{equation}
+All logical and binary--continuous relations are represented with MILP linearizations.
+
+\section{Data and Probabilistic Modeling}
+The empirical study uses SMARD Germany/DE-LU data from 2024-01-01 through 2025-09-30. Physical series are retained at 15-min resolution and day-ahead prices are hourly. Student-$t$ dependence is selected on validation: AIC $=-670.7362$ versus $-429.9003$ for the Gaussian copula; fitted degrees of freedom are 18.5515. OOS log-likelihoods are 12.990350 and $-30.708711$, respectively. The initial joint pool contains 5000 scenarios (120000 scenario-hour rows), with currently evidenced reduced sets $K=30,50,100$.
+
+\section{Empirical Results}
+Table~\ref{tab:results} contains the locked Gate-10 results.
+\begin{table}[!t]\centering\caption{Locked Gate-10 optimization results}\label{tab:results}\begin{tabular}{lrrrrr}\toprule Model & K & Profit & CVaR95 & Risk Obj. & Time (s)\\\midrule B0&1&198272.69&0.00&198272.69&0.101\\ B2&30&195846.48&91422.90&195846.48&0.948\\ P1&30&196994.65&90993.10&195174.78&1.647\\ B2&50&198518.12&89341.24&198518.12&2.518\\ P1&50&198518.12&89341.24&196731.29&2.799\\ B2&100&198828.98&88088.51&198828.98&5.295\\ P1&100&200283.79&85985.16&198564.09&13.770\\\bottomrule\end{tabular}\end{table}
+
+At $K=100$, P1 improves expected profit by 0.73\% and decreases CVaR95 by 2.39\% relative to B2. Runtime is approximately 2.60 times higher. This should be interpreted as a modest simultaneous risk--return improvement rather than unconditional profit dominance.
+
+\begin{figure}[!t]\centering\includegraphics[width=\columnwidth]{Figures/Fig_Expected_Profit_vs_K.png}\caption{Expected profit versus reduced scenario count.}\end{figure}
+\begin{figure}[!t]\centering\includegraphics[width=\columnwidth]{Figures/Fig_CVaR95_vs_K.png}\caption{CVaR95 versus reduced scenario count.}\end{figure}
+\begin{figure}[!t]\centering\includegraphics[width=\columnwidth]{Figures/Fig_Runtime_vs_K.png}\caption{MILP runtime versus reduced scenario count.}\end{figure}
+\begin{figure}[!t]\centering\includegraphics[width=\columnwidth]{Figures/Fig_Objective_vs_K.png}\caption{Risk-adjusted objective versus reduced scenario count.}\end{figure}
+
+\section{Settlement, OOS Validation, and Statistical Testing}
+The preserved execution generated realized-settlement files for B0, B2-$K30/50/100$, and P1-$K30/50/100$. The settlement engine evaluates realized physical quantities and realized DA price after the bid is frozen and records realized settlement profit, mean absolute imbalance, and total unserved energy. These outputs are a one-day diagnostic layer. The final empirical OOS experiment requires a common rolling calendar with no leakage, followed by paired bootstrap confidence intervals and paired nonparametric testing. The accessible preserved artifacts do not expose the numeric settlement rows or a completed common-calendar OOS database; consequently, no settlement number or statistical-superiority claim is inserted here.
+
+\section{Sensitivity}
+The locked P1 point is $(\lambda,\alpha)=(0.02,0.95)$. Final sensitivity should vary $\lambda$, $\alpha$, scenario count, and relevant battery degradation/replacement cost assumptions. Because the required common-calendar OOS observations are not present in the accessible artifact, fabricated sensitivity values are deliberately excluded.
+
+\section{Discussion and Limitations}
+The results demonstrate that uncertainty representation and explicit tail-risk control can alter VPP bidding decisions. The P1 improvement at $K=100$ is economically positive but modest, while the computational premium is material. N--1 deliverability provides a physical safeguard by preventing the VPP from monetizing flexibility that would disappear after a largest-unit contingency. Remaining limitations are the absence of the final common-calendar OOS table in the accessible artifact, the not-yet-validated B1 Gaussian benchmark, and the need for explicit sensitivity/statistical layers before claims of general superiority.
+
+\section{Conclusion}
+AlocaBid integrates rolling-horizon stochastic MILP optimization, Student-$t$ dependence modeling, scenario reduction, dispatch groups, asset-level N--1 reserve deliverability, and CVaR95 risk control. At $K=100$, P1 increases expected profit by 0.73\% and reduces CVaR95 by 2.39\% relative to B2, at increased computational cost. The final paper must retain these values as the locked Gate-10 optimization baseline and must not replace the missing OOS/statistical layers with invented numbers.
+\end{document}

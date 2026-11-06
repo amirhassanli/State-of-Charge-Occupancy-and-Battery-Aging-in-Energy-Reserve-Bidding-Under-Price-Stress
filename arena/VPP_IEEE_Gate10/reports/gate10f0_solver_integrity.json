@@ -1,0 +1,61 @@
+{
+  "gate": "10F.0",
+  "status": "PASS",
+  "environment": {
+    "python_executable": "C:\\Users\\Mahboobian\\AppData\\Local\\Programs\\Python\\Python313\\pythonw.exe",
+    "python_version": "3.13.2 (tags/v3.13.2:4f8bb39, Feb  4 2025, 15:23:48) [MSC v.1942 64 bit (AMD64)]"
+  },
+  "solver": {
+    "interface": "highspy",
+    "version": [
+      1,
+      15,
+      1
+    ],
+    "smoke_test": {
+      "status": "HighsStatus.kOk",
+      "model_status": "HighsModelStatus.kOptimal",
+      "x": 10.0,
+      "z": 1.0,
+      "objective": 52.0,
+      "runtime_seconds": 0.00046549999387934804,
+      "checks": {
+        "x_optimal": true,
+        "z_optimal": true,
+        "objective_optimal": true,
+        "runtime_valid": true
+      }
+    }
+  },
+  "scenario_files": {
+    "100": {
+      "rows": 2400,
+      "scenarios": 100,
+      "probability_sum": 1.0,
+      "min_probability": 0.0008,
+      "max_probability": 0.0378,
+      "missing_values": 0,
+      "path": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\scenarios\\reduced_scenarios\\scenario_reduced_100.csv"
+    },
+    "50": {
+      "rows": 1200,
+      "scenarios": 50,
+      "probability_sum": 1.0,
+      "min_probability": 0.0022,
+      "max_probability": 0.06,
+      "missing_values": 0,
+      "path": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\scenarios\\reduced_scenarios\\scenario_reduced_50.csv"
+    },
+    "30": {
+      "rows": 720,
+      "scenarios": 30,
+      "probability_sum": 1.0,
+      "min_probability": 0.002,
+      "max_probability": 0.0892,
+      "missing_values": 0,
+      "path": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\scenarios\\reduced_scenarios\\scenario_reduced_30.csv"
+    }
+  },
+  "reason_for_highspy": "Pyomo's current HiGHS interface uses file-descriptor output capture internally on Windows; the direct highspy interface avoids that layer.",
+  "next_gate": "10F.1 — final stochastic MILP"
+}

@@ -1,0 +1,450 @@
+{
+  "gate": "10F.1",
+  "status": "INVENTORY_COMPLETE",
+  "project_root": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10",
+  "python_file_count": 26,
+  "top_candidates": [
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10f0_solver_integrity.py",
+      "relative_path": "gate10f0_solver_integrity.py",
+      "size_bytes": 18017,
+      "score": 106,
+      "keywords": [
+        "pyomo",
+        "highspy",
+        "Objective",
+        "Binary",
+        "highs",
+        "milp",
+        "scenario"
+      ],
+      "counts": {
+        "pyomo_imports": 0,
+        "highspy": 33,
+        "objectives": 0,
+        "constraints": 0,
+        "variables": 0,
+        "binary": 1,
+        "solver_calls": 0
+      }
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10f1_global_model_search.py",
+      "relative_path": "gate10f1_global_model_search.py",
+      "size_bytes": 9746,
+      "score": 39,
+      "keywords": [
+        "pyomo",
+        "highspy",
+        "ConcreteModel",
+        "AbstractModel",
+        "Objective",
+        "Constraint",
+        "Var(",
+        "Binary",
+        "Integers",
+        "SolverFactory",
+        "highs",
+        "milp",
+        "N-1",
+        "n-1",
+        "BESS",
+        "battery",
+        "dispatch",
+        "reserve",
+        "demand response",
+        "DR",
+        "rolling",
+        "scenario"
+      ],
+      "counts": {
+        "pyomo_imports": 0,
+        "highspy": 3,
+        "objectives": 1,
+        "constraints": 1,
+        "variables": 1,
+        "binary": 1,
+        "solver_calls": 0
+      }
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10f1_model_inventory.py",
+      "relative_path": "gate10f1_model_inventory.py",
+      "size_bytes": 6151,
+      "score": 36,
+      "keywords": [
+        "pyomo",
+        "highspy",
+        "ConcreteModel",
+        "AbstractModel",
+        "Objective",
+        "Constraint",
+        "Var(",
+        "Binary",
+        "Integers",
+        "SolverFactory",
+        "highs",
+        "milp",
+        "N-1",
+        "n-1",
+        "BESS",
+        "battery",
+        "dispatch",
+        "reserve",
+        "demand response",
+        "DR",
+        "rolling",
+        "scenario"
+      ],
+      "counts": {
+        "pyomo_imports": 0,
+        "highspy": 4,
+        "objectives": 0,
+        "constraints": 0,
+        "variables": 1,
+        "binary": 1,
+        "solver_calls": 0
+      }
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10f1_candidate_inspector.py",
+      "relative_path": "gate10f1_candidate_inspector.py",
+      "size_bytes": 2879,
+      "score": 20,
+      "keywords": [
+        "pyomo",
+        "highspy",
+        "Objective",
+        "Constraint",
+        "Binary",
+        "highs",
+        "milp",
+        "BESS",
+        "battery",
+        "dispatch",
+        "reserve",
+        "demand response",
+        "DR",
+        "rolling"
+      ],
+      "counts": {
+        "pyomo_imports": 0,
+        "highspy": 2,
+        "objectives": 0,
+        "constraints": 0,
+        "variables": 0,
+        "binary": 0,
+        "solver_calls": 0
+      }
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10d3_var4_temporal_scenarios.py",
+      "relative_path": "gate10d3_var4_temporal_scenarios.py",
+      "size_bytes": 16797,
+      "score": 7,
+      "keywords": [
+        "Var(",
+        "Integers",
+        "DR",
+        "scenario"
+      ],
+      "counts": {
+        "pyomo_imports": 0,
+        "highspy": 0,
+        "objectives": 0,
+        "constraints": 0,
+        "variables": 0,
+        "binary": 0,
+        "solver_calls": 1
+      }
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10d3c_block_bootstrap_scenarios.py",
+      "relative_path": "gate10d3c_block_bootstrap_scenarios.py",
+      "size_bytes": 12381,
+      "score": 4,
+      "keywords": [
+        "Integers",
+        "reserve",
+        "DR",
+        "scenario"
+      ],
+      "counts": {
+        "pyomo_imports": 0,
+        "highspy": 0,
+        "objectives": 0,
+        "constraints": 0,
+        "variables": 0,
+        "binary": 0,
+        "solver_calls": 0
+      }
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10d3_temporal_coherent_scenarios.py",
+      "relative_path": "gate10d3_temporal_coherent_scenarios.py",
+      "size_bytes": 16987,
+      "score": 4,
+      "keywords": [
+        "Var(",
+        "Integers",
+        "DR",
+        "scenario"
+      ],
+      "counts": {
+        "pyomo_imports": 0,
+        "highspy": 0,
+        "objectives": 0,
+        "constraints": 0,
+        "variables": 0,
+        "binary": 0,
+        "solver_calls": 0
+      }
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10e_scenario_reduction.py",
+      "relative_path": "gate10e_scenario_reduction.py",
+      "size_bytes": 18777,
+      "score": 3,
+      "keywords": [
+        "milp",
+        "DR",
+        "scenario"
+      ],
+      "counts": {
+        "pyomo_imports": 0,
+        "highspy": 0,
+        "objectives": 0,
+        "constraints": 0,
+        "variables": 0,
+        "binary": 0,
+        "solver_calls": 0
+      }
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\save_gate10e_report.py",
+      "relative_path": "save_gate10e_report.py",
+      "size_bytes": 2167,
+      "score": 3,
+      "keywords": [
+        "Objective",
+        "milp",
+        "scenario"
+      ],
+      "counts": {
+        "pyomo_imports": 0,
+        "highspy": 0,
+        "objectives": 0,
+        "constraints": 0,
+        "variables": 0,
+        "binary": 0,
+        "solver_calls": 0
+      }
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10a2_information_firewall.py",
+      "relative_path": "gate10a2_information_firewall.py",
+      "size_bytes": 11732,
+      "score": 2,
+      "keywords": [
+        "reserve",
+        "DR"
+      ],
+      "counts": {
+        "pyomo_imports": 0,
+        "highspy": 0,
+        "objectives": 0,
+        "constraints": 0,
+        "variables": 0,
+        "binary": 0,
+        "solver_calls": 0
+      }
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10b_forecast_calibration.py",
+      "relative_path": "gate10b_forecast_calibration.py",
+      "size_bytes": 11730,
+      "score": 2,
+      "keywords": [
+        "reserve",
+        "DR"
+      ],
+      "counts": {
+        "pyomo_imports": 0,
+        "highspy": 0,
+        "objectives": 0,
+        "constraints": 0,
+        "variables": 0,
+        "binary": 0,
+        "solver_calls": 0
+      }
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10c_bias_correct_refit.py",
+      "relative_path": "gate10c_bias_correct_refit.py",
+      "size_bytes": 16303,
+      "score": 2,
+      "keywords": [
+        "Objective",
+        "DR"
+      ],
+      "counts": {
+        "pyomo_imports": 0,
+        "highspy": 0,
+        "objectives": 0,
+        "constraints": 0,
+        "variables": 0,
+        "binary": 0,
+        "solver_calls": 0
+      }
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10c_copula_diagnostics.py",
+      "relative_path": "gate10c_copula_diagnostics.py",
+      "size_bytes": 24868,
+      "score": 2,
+      "keywords": [
+        "Objective",
+        "DR"
+      ],
+      "counts": {
+        "pyomo_imports": 0,
+        "highspy": 0,
+        "objectives": 0,
+        "constraints": 0,
+        "variables": 0,
+        "binary": 0,
+        "solver_calls": 0
+      }
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10d2_scenario_validation.py",
+      "relative_path": "gate10d2_scenario_validation.py",
+      "size_bytes": 18430,
+      "score": 2,
+      "keywords": [
+        "DR",
+        "scenario"
+      ],
+      "counts": {
+        "pyomo_imports": 0,
+        "highspy": 0,
+        "objectives": 0,
+        "constraints": 0,
+        "variables": 0,
+        "binary": 0,
+        "solver_calls": 0
+      }
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10d3c_correct_acf_validation.py",
+      "relative_path": "gate10d3c_correct_acf_validation.py",
+      "size_bytes": 7103,
+      "score": 2,
+      "keywords": [
+        "DR",
+        "scenario"
+      ],
+      "counts": {
+        "pyomo_imports": 0,
+        "highspy": 0,
+        "objectives": 0,
+        "constraints": 0,
+        "variables": 0,
+        "binary": 0,
+        "solver_calls": 0
+      }
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\gate10d_generate_5000_scenarios.py",
+      "relative_path": "gate10d_generate_5000_scenarios.py",
+      "size_bytes": 12138,
+      "score": 2,
+      "keywords": [
+        "DR",
+        "scenario"
+      ],
+      "counts": {
+        "pyomo_imports": 0,
+        "highspy": 0,
+        "objectives": 0,
+        "constraints": 0,
+        "variables": 0,
+        "binary": 0,
+        "solver_calls": 0
+      }
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\validate_gate10a.py",
+      "relative_path": "validate_gate10a.py",
+      "size_bytes": 18921,
+      "score": 2,
+      "keywords": [
+        "reserve",
+        "DR"
+      ],
+      "counts": {
+        "pyomo_imports": 0,
+        "highspy": 0,
+        "objectives": 0,
+        "constraints": 0,
+        "variables": 0,
+        "binary": 0,
+        "solver_calls": 0
+      }
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\1.py",
+      "relative_path": "1.py",
+      "size_bytes": 8927,
+      "score": 1,
+      "keywords": [
+        "DR"
+      ],
+      "counts": {
+        "pyomo_imports": 0,
+        "highspy": 0,
+        "objectives": 0,
+        "constraints": 0,
+        "variables": 0,
+        "binary": 0,
+        "solver_calls": 0
+      }
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\check_load_forecast_consistency.py",
+      "relative_path": "check_load_forecast_consistency.py",
+      "size_bytes": 3030,
+      "score": 1,
+      "keywords": [
+        "DR"
+      ],
+      "counts": {
+        "pyomo_imports": 0,
+        "highspy": 0,
+        "objectives": 0,
+        "constraints": 0,
+        "variables": 0,
+        "binary": 0,
+        "solver_calls": 0
+      }
+    },
+    {
+      "file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\convert_residual_forecast.py",
+      "relative_path": "convert_residual_forecast.py",
+      "size_bytes": 6264,
+      "score": 1,
+      "keywords": [
+        "DR"
+      ],
+      "counts": {
+        "pyomo_imports": 0,
+        "highspy": 0,
+        "objectives": 0,
+        "constraints": 0,
+        "variables": 0,
+        "binary": 0,
+        "solver_calls": 0
+      }
+    }
+  ]
+}

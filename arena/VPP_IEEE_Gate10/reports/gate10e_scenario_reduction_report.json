@@ -1,0 +1,37 @@
+{
+  "gate": "10E",
+  "status": "PASS",
+  "source_scenarios": 5000,
+  "trajectory_dimension": 120,
+  "method": "Standardized trajectory clustering with representative real-scenario selection",
+  "warning": "K selection is provisional. Final K must be selected after MILP runtime/objective fidelity testing.",
+  "results": [
+    {
+      "target_k": 100,
+      "selected_scenarios": 100,
+      "probability_sum": 1.0,
+      "reconstruction_error": 74.703402,
+      "mean_distribution_error": 45.919874,
+      "mean_std_error": 88.122595,
+      "output_file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\scenarios\\reduced_scenarios\\scenario_reduced_100.csv"
+    },
+    {
+      "target_k": 50,
+      "selected_scenarios": 50,
+      "probability_sum": 1.0,
+      "reconstruction_error": 81.765477,
+      "mean_distribution_error": 23.791356,
+      "mean_std_error": 145.438916,
+      "output_file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\scenarios\\reduced_scenarios\\scenario_reduced_50.csv"
+    },
+    {
+      "target_k": 30,
+      "selected_scenarios": 30,
+      "probability_sum": 1.0,
+      "reconstruction_error": 88.763241,
+      "mean_distribution_error": 34.968099,
+      "mean_std_error": 117.447349,
+      "output_file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\scenarios\\reduced_scenarios\\scenario_reduced_30.csv"
+    }
+  ]
+}

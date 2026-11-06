@@ -1,0 +1,12 @@
+{
+  "sf_load": 8.279727445448033e-05,
+  "sf_pv": 6.889955779402563e-05,
+  "sf_w": 4.810120493518363e-05,
+  "load_ref_nat_mw": 60388.46125,
+  "solar_ref_nat_mw": 58055.525,
+  "wind_ref_nat_mw": 41579.0,
+  "n_hours": 1952,
+  "start": "2026-06-01 00:00:00+02:00",
+  "end": "2026-08-21 07:00:00+02:00",
+  "source": "Bundesnetzagentur | SMARD.de via api.energy-charts.info (CC BY 4.0)"
+}

@@ -1,0 +1,103 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Download study market data",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"download_market_data.py"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Test reconstructed model",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"-m",
+				"pytest",
+				"tests",
+				"-q"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run May 1 exclusive diagnostic",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"run_diagnostics.py",
+				"--panel",
+				"..\\data\\processed\\hourly_vpp_panel_2025-12-01_2026-08-21.csv",
+				"--mode",
+				"cross",
+				"--day",
+				"2026-05-01",
+				"--K",
+				"30",
+				"--seed",
+				"20260821",
+				"--exclusive",
+				"--out",
+				"..\\data\\results\\exclusive_milp"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run May 1 relaxed LP",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"run_diagnostics.py",
+				"--panel",
+				"..\\data\\processed\\hourly_vpp_panel_2025-12-01_2026-08-21.csv",
+				"--mode",
+				"cross",
+				"--day",
+				"2026-05-01",
+				"--K",
+				"30",
+				"--seed",
+				"20260821",
+				"--out",
+				"..\\data\\results\\relaxed_lp"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Scan negative-price days",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"run_diagnostics.py",
+				"--panel",
+				"..\\data\\processed\\hourly_vpp_panel_2025-12-01_2026-08-21.csv",
+				"--mode",
+				"scan",
+				"--K",
+				"20",
+				"--seed",
+				"20260821",
+				"--out",
+				"..\\data\\results\\negative_scan_lp"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Validate complete artifact package",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"validate_artifacts.py"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}

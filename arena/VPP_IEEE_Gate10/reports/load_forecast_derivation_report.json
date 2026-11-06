@@ -1,0 +1,10 @@
+{
+  "method": "load_forecast = residual_load_forecast + wind_on_forecast + wind_off_forecast + pv_forecast",
+  "source": "Bundesnetzagentur | SMARD.de",
+  "rows": 61340,
+  "missing_rate": 0.0,
+  "negative_values": 0,
+  "start": "2024-01-01 00:00:00+01:00",
+  "end": "2025-09-30 23:45:00+02:00",
+  "output_file": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\processed\\load_forecast_derived_from_smard.csv"
+}

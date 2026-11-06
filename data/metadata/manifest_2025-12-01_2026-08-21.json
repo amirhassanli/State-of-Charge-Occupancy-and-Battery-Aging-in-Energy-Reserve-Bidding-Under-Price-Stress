@@ -1,0 +1,65 @@
+{
+  "retrieved_at_utc": "2026-10-30T12:01:39.515670+00:00",
+  "requested_local_start": "2025-12-01",
+  "requested_local_end": "2026-08-21",
+  "processed_local_cutoff": "2026-08-21T07:00:00+02:00",
+  "timezone": "Europe/Berlin",
+  "sources": {
+    "day_ahead_price": {
+      "url": "https://api.energy-charts.info/price?bzn=DE-LU&start=2025-12-01&end=2026-08-21",
+      "publisher": "Energy-Charts API; source: Bundesnetzagentur | SMARD.de",
+      "license": "CC BY 4.0 (creativecommons.org/licenses/by/4.0) from Bundesnetzagentur | SMARD.de",
+      "unit": "EUR / MWh",
+      "sha256": "313ea8f657b23759e01fa62f804364bacc082d6b69657c840a3b9a367b7a1075"
+    },
+    "public_power": {
+      "url": "https://api.energy-charts.info/public_power?country=de&start=2025-12-01&end=2026-08-21",
+      "publisher": "Fraunhofer ISE Energy-Charts",
+      "license": "CC BY 4.0; attribution required",
+      "series": [
+        "hydro pumped storage consumption",
+        "cross border electricity trading",
+        "hydro run-of-river",
+        "biomass",
+        "fossil brown coal / lignite",
+        "fossil hard coal",
+        "fossil oil",
+        "fossil coal-derived gas",
+        "fossil gas",
+        "geothermal",
+        "hydro water reservoir",
+        "hydro pumped storage",
+        "others",
+        "waste",
+        "wind offshore",
+        "wind onshore",
+        "solar",
+        "load",
+        "residual load",
+        "renewable share of load",
+        "renewable share of generation"
+      ],
+      "units": "MW",
+      "sha256": "ccff822ddf5c569fbe3a1900c4b9e07db2b2491f6110a3effa76110b5ee57d4a"
+    }
+  },
+  "processing": {
+    "raw_resolution": "API interval series; resampled to local-clock hourly means",
+    "wind": "onshore plus offshore generation",
+    "scaling_factors": {
+      "load": 7.042573660654786e-05,
+      "solar": 6.889955779402563e-05,
+      "wind": 3.6960890757467256e-05
+    },
+    "mapping": "load q95 -> 5 MW; study-window solar maximum -> 4 MW; combined wind maximum -> 2 MW",
+    "missing_values": "rows missing any required series are excluded from the processed panel; raw responses are retained",
+    "complete_24h_days": 262,
+    "usable_hourly_rows": 6319
+  },
+  "processed_panel": {
+    "path": "processed\\hourly_vpp_panel_2025-12-01_2026-08-21.csv",
+    "sha256": "9079b65f57974102c8e70b2362e5ecb9ad4674779ac3f8257d4c51901f75ca84",
+    "rows": 6319
+  },
+  "battery_telemetry": null
+}

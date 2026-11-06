@@ -1,0 +1,13 @@
+Model,K,Variables,Equalities,Inequalities,HiGHS status,Iterations,Runtime (s)
+B0,1,216,49,46,HighsModelStatus.kOptimal,62,0.011
+B2,50,7323,2450,2350,HighsModelStatus.kOptimal,6568,0.1727
+P1,50,7323,2450,7150,HighsModelStatus.kOptimal,5226,0.3035
+B0 (scale),30,,,,HighsModelStatus.kOptimal,,0.0044
+B2 (scale),30,,,,HighsModelStatus.kOptimal,,0.0897
+P1 (scale),30,,,,HighsModelStatus.kOptimal,,0.1388
+B0 (scale),50,,,,HighsModelStatus.kOptimal,,0.011
+B2 (scale),50,,,,HighsModelStatus.kOptimal,,0.1773
+P1 (scale),50,,,,HighsModelStatus.kOptimal,,0.3377
+B0 (scale),100,,,,HighsModelStatus.kOptimal,,0.004
+B2 (scale),100,,,,HighsModelStatus.kOptimal,,0.5923
+P1 (scale),100,,,,HighsModelStatus.kOptimal,,1.6099

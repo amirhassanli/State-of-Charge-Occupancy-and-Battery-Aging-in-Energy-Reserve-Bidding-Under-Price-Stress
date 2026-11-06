@@ -1,0 +1,144 @@
+\begin{table}
+\caption{Dataset summary (SMARD DE-LU).}
+\label{tab:dataset}
+\begin{tabular}{lll}
+\toprule
+Item & Value & Notes \\
+\midrule
+Bidding zone & DE-LU (Germany / Luxembourg) & SMARD / Energy-Charts \\
+Data licence & CC BY 4.0, Bundesnetzagentur | SMARD.de & unchanged republication \\
+DA price resolution (raw) & 15 min, resampled to 1 h (mean) & EUR/MWh \\
+Study window (prices) & 2026-06-01 – 2026-08-21 & 1952 hourly samples \\
+Complete calendar days & 81 & 24 hourly stamps \\
+DA price mean / std & 113.19 / 69.62 & EUR/MWh \\
+DA price min / max & -45.87 / 665.82 & EUR/MWh \\
+Negative-price hours & 8.0\% of hours & study window \\
+Load / PV / wind forecasts & Day-ahead public-power forecasts & scaled to VPP ratings \\
+Operating day (Gate 10) & 2026-08-19 & weekday, complete actuals \\
+Scenario history & 58 error days, K=50 & daily block bootstrap \\
+VPP load reference & 5.00 MW (p95 national scaled) & sf\_load=8.280e-05 \\
+VPP PV / wind ratings & 4.00 / 2.00 MW & peak-matched \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}
+\caption{VPP and market-model parameters.}
+\label{tab:params}
+\begin{tabular}{lll}
+\toprule
+Parameter & Value & Comment \\
+\midrule
+Battery power / energy & 2.50 MW / 5.00 MWh & Li-ion equivalent \\
+Charge / discharge efficiency & 0.95 / 0.95 & one-way \\
+SoC bounds / initial & 10\%–90\%, init 50\% & cyclic terminal SoC \\
+Degradation cost & 1.50 EUR/MWh throughput & linear \\
+DG rating / variable cost & 1.80 MW / 68.0 EUR/MWh & gas CHP proxy \\
+DG ramp & 1.20 MW/h & continuous \\
+Load-service energy tariff (reporting) & 180.0 EUR/MWh & exogenous industrial contract \\
+Max DA position & ±12.0 MW & price-taker \\
+Max reserve (up/down) & 1.50 MW & P1 only \\
+Reserve price (up / down base) & 9.0 / 6.5 EUR/MW/h & shaped by DA price \\
+Imbalance short add / coef & 18.0 / 0.12 & two-price system \\
+Imbalance long add / coef & 10.0 / 0.08 & two-price system \\
+Risk aversion λ (default) & 0.05 & mean–CVaR weight \\
+CVaR confidence α (default) & 0.95 & tail \\
+Scenarios K (default) & 50 & equiprobable \\
+Solver & HiGHS (primal/dual LP) & scipy 1.17 linprog \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}
+\caption{Gate-10 optimisation results on the operating day.}
+\label{tab:opt}
+\begin{tabular}{llrrrrrrrrrr}
+\toprule
+Model & HiGHS status & E[profit] (EUR) & CVaR (EUR) & Std (EUR) & Realized profit (EUR) & DA energy (MWh) & Reserve up (MW·h) & Reserve down (MW·h) & Runtime (s) & Variables & Inequalities \\
+\midrule
+B0 & HighsModelStatus.kOptimal & 11497.863 & 9985.655 & 893.104 & 10938.355 & -23.714 & 0.000 & 0.000 & 0.011 & 216 & 46 \\
+B2 & HighsModelStatus.kOptimal & 11508.275 & 10026.782 & 888.633 & 10964.669 & -25.797 & 0.000 & 0.000 & 0.173 & 7323 & 2350 \\
+P1 & HighsModelStatus.kOptimal & 11991.788 & 10440.127 & 863.514 & 11486.956 & -25.548 & 26.619 & 28.246 & 0.303 & 7323 & 7150 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}
+\caption{P1 sensitivity excerpt (full factorial in the companion CSV).}
+\label{tab:sens}
+\begin{tabular}{lrrrlrrrrrrr}
+\toprule
+model & λ & α & K & Status & E[profit] (EUR) & CVaR (EUR) & Std (EUR) & Realized (EUR) & Runtime (s) & Σ r↑ & Σ r↓ \\
+\midrule
+P1 & 0.000 & 0.900 & 30 & HighsModelStatus.kOptimal & 12067.990 & 10821.860 & 949.480 & 11482.900 & 0.079 & 26.630 & 28.390 \\
+P1 & 0.000 & 0.950 & 30 & HighsModelStatus.kOptimal & 12067.990 & 10577.620 & 949.480 & 11482.900 & 0.079 & 26.630 & 28.390 \\
+P1 & 0.000 & 0.990 & 30 & HighsModelStatus.kOptimal & 12067.990 & 9989.140 & 949.480 & 11482.900 & 0.079 & 26.630 & 28.390 \\
+P1 & 0.010 & 0.900 & 30 & HighsModelStatus.kOptimal & 12067.970 & 10825.190 & 949.390 & 11487.030 & 0.126 & 26.640 & 28.390 \\
+P1 & 0.010 & 0.950 & 30 & HighsModelStatus.kOptimal & 12067.970 & 10579.850 & 949.390 & 11487.030 & 0.147 & 26.640 & 28.390 \\
+P1 & 0.010 & 0.990 & 30 & HighsModelStatus.kOptimal & 12067.960 & 9996.010 & 949.400 & 11487.130 & 0.135 & 26.640 & 28.390 \\
+P1 & 0.020 & 0.900 & 30 & HighsModelStatus.kOptimal & 12067.970 & 10825.190 & 949.380 & 11487.020 & 0.152 & 26.640 & 28.390 \\
+P1 & 0.020 & 0.950 & 30 & HighsModelStatus.kOptimal & 12067.850 & 10583.140 & 948.050 & 11487.180 & 0.145 & 26.700 & 28.340 \\
+P1 & 0.020 & 0.990 & 30 & HighsModelStatus.kOptimal & 12067.840 & 10003.680 & 947.530 & 11485.490 & 0.145 & 26.700 & 28.340 \\
+P1 & 0.050 & 0.900 & 30 & HighsModelStatus.kOptimal & 12067.480 & 10829.100 & 947.230 & 11488.110 & 0.150 & 26.700 & 28.340 \\
+P1 & 0.050 & 0.950 & 30 & HighsModelStatus.kOptimal & 12067.430 & 10588.140 & 946.680 & 11485.980 & 0.139 & 26.700 & 28.340 \\
+P1 & 0.050 & 0.990 & 30 & HighsModelStatus.kOptimal & 12067.160 & 10021.820 & 945.920 & 11484.850 & 0.174 & 26.680 & 28.320 \\
+P1 & 0.100 & 0.900 & 30 & HighsModelStatus.kOptimal & 12066.210 & 10833.740 & 945.680 & 11489.350 & 0.163 & 26.700 & 28.340 \\
+P1 & 0.100 & 0.950 & 30 & HighsModelStatus.kOptimal & 12059.350 & 10646.260 & 924.250 & 11469.260 & 0.157 & 25.800 & 27.340 \\
+P1 & 0.100 & 0.990 & 30 & HighsModelStatus.kOptimal & 12059.060 & 10151.670 & 923.380 & 11465.560 & 0.210 & 25.800 & 27.340 \\
+P1 & 0.200 & 0.900 & 30 & HighsModelStatus.kOptimal & 12055.090 & 10870.810 & 923.310 & 11470.500 & 0.175 & 25.800 & 27.340 \\
+P1 & 0.200 & 0.950 & 30 & HighsModelStatus.kOptimal & 12053.380 & 10661.060 & 922.820 & 11467.680 & 0.219 & 25.800 & 27.340 \\
+P1 & 0.200 & 0.990 & 30 & HighsModelStatus.kOptimal & 12052.650 & 10188.510 & 921.650 & 11465.050 & 0.220 & 25.800 & 27.340 \\
+P1 & 0.000 & 0.900 & 50 & HighsModelStatus.kOptimal & 11992.620 & 10706.300 & 867.730 & 11477.340 & 0.182 & 26.700 & 28.340 \\
+P1 & 0.000 & 0.950 & 50 & HighsModelStatus.kOptimal & 11992.620 & 10418.030 & 867.730 & 11477.340 & 0.182 & 26.700 & 28.340 \\
+P1 & 0.000 & 0.990 & 50 & HighsModelStatus.kOptimal & 11992.620 & 9970.740 & 867.730 & 11477.340 & 0.186 & 26.700 & 28.340 \\
+P1 & 0.010 & 0.900 & 50 & HighsModelStatus.kOptimal & 11992.590 & 10709.050 & 867.190 & 11481.610 & 0.266 & 26.700 & 28.340 \\
+P1 & 0.010 & 0.950 & 50 & HighsModelStatus.kOptimal & 11992.590 & 10422.840 & 867.190 & 11481.600 & 0.246 & 26.700 & 28.340 \\
+P1 & 0.010 & 0.990 & 50 & HighsModelStatus.kOptimal & 11992.540 & 9980.380 & 866.640 & 11483.090 & 0.256 & 26.700 & 28.340 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}
+\caption{Paired statistical tests on scenario (and rolling OOS) profits.}
+\label{tab:stats}
+\begin{tabular}{lrrrrrrrrrrrrrr}
+\toprule
+Comparison & n & Mean A (EUR) & Mean B (EUR) & Mean diff. (EUR) & Std diff. (EUR) & t & p (t-test) & Wilcoxon W & p (Wilcoxon) & Cohen's d & Boot. CI 2.5\% & Boot. CI 97.5\% & Sig. t (5\%) & Sig. W (5\%) \\
+\midrule
+P1 − B0 & 50 & 11991.788 & 11497.863 & 493.925 & 78.560 & 44.457 & 0.000 & 0.000 & 0.000 & 6.287 & 471.113 & 514.480 & True & True \\
+P1 − B2 & 50 & 11991.788 & 11508.275 & 483.513 & 76.562 & 44.656 & 0.000 & 0.000 & 0.000 & 6.315 & 460.765 & 502.346 & True & True \\
+B2 − B0 & 50 & 11508.275 & 11497.863 & 10.412 & 34.366 & 2.142 & 0.037 & 420.000 & 0.036 & 0.303 & 1.005 & 19.964 & True & True \\
+P1\_OOS − B0\_OOS & 14 & 12202.635 & 11639.274 & 563.361 & 59.987 & 35.139 & 0.000 & 0.000 & 0.000 & 9.391 & 533.004 & 592.972 & True & True \\
+P1\_OOS − B2\_OOS & 14 & 12202.635 & 11632.711 & 569.924 & 46.900 & 45.468 & 0.000 & 0.000 & 0.000 & 12.152 & 545.994 & 593.158 & True & True \\
+B2\_OOS − B0\_OOS & 14 & 11632.711 & 11639.274 & -6.563 & 24.017 & -1.022 & 0.325 & 36.000 & 0.326 & -0.273 & -18.522 & 5.496 & False & False \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}
+\caption{Computational performance of HiGHS.}
+\label{tab:compute}
+\begin{tabular}{lrlllllr}
+\toprule
+Model & K & Variables & Equalities & Inequalities & HiGHS status & Iterations & Runtime (s) \\
+\midrule
+B0 & 1 & 216 & 49 & 46 & HighsModelStatus.kOptimal & 62 & 0.011 \\
+B2 & 50 & 7323 & 2450 & 2350 & HighsModelStatus.kOptimal & 6568 & 0.173 \\
+P1 & 50 & 7323 & 2450 & 7150 & HighsModelStatus.kOptimal & 5226 & 0.303 \\
+B0 (scale) & 30 &  &  &  & HighsModelStatus.kOptimal &  & 0.004 \\
+B2 (scale) & 30 &  &  &  & HighsModelStatus.kOptimal &  & 0.090 \\
+P1 (scale) & 30 &  &  &  & HighsModelStatus.kOptimal &  & 0.139 \\
+B0 (scale) & 50 &  &  &  & HighsModelStatus.kOptimal &  & 0.011 \\
+B2 (scale) & 50 &  &  &  & HighsModelStatus.kOptimal &  & 0.177 \\
+P1 (scale) & 50 &  &  &  & HighsModelStatus.kOptimal &  & 0.338 \\
+B0 (scale) & 100 &  &  &  & HighsModelStatus.kOptimal &  & 0.004 \\
+B2 (scale) & 100 &  &  &  & HighsModelStatus.kOptimal &  & 0.592 \\
+P1 (scale) & 100 &  &  &  & HighsModelStatus.kOptimal &  & 1.610 \\
+\bottomrule
+\end{tabular}
+\end{table}

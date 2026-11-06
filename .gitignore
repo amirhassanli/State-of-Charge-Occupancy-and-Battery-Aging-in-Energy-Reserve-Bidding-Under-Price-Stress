@@ -1,0 +1,21 @@
+# Word lock files
+~$*.docx
+~$*.xlsx
+~$*.pptx
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# OS
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Large generated artifacts (keep source; regenerate locally)
+*.zip
+*.rar
+*.gz

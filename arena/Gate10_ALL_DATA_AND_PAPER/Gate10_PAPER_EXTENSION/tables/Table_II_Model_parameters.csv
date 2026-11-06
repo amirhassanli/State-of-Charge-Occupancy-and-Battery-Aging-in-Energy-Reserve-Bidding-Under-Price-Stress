@@ -1,0 +1,17 @@
+Parameter,Value,Comment
+Battery power / energy,2.50 MW / 5.00 MWh,Li-ion equivalent
+Charge / discharge efficiency,0.95 / 0.95,one-way
+SoC bounds / initial,"10%–90%, init 50%",cyclic terminal SoC
+Degradation cost,1.50 EUR/MWh throughput,linear
+DG rating / variable cost,1.80 MW / 68.0 EUR/MWh,gas CHP proxy
+DG ramp,1.20 MW/h,continuous
+Load-service energy tariff (reporting),180.0 EUR/MWh,exogenous industrial contract
+Max DA position,±12.0 MW,price-taker
+Max reserve (up/down),1.50 MW,P1 only
+Reserve price (up / down base),9.0 / 6.5 EUR/MW/h,shaped by DA price
+Imbalance short add / coef,18.0 / 0.12,two-price system
+Imbalance long add / coef,10.0 / 0.08,two-price system
+Risk aversion λ (default),0.05,mean–CVaR weight
+CVaR confidence α (default),0.95,tail
+Scenarios K (default),50,equiprobable
+Solver,HiGHS (primal/dual LP),scipy 1.17 linprog

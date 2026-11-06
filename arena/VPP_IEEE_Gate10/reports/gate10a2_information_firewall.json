@@ -1,0 +1,12 @@
+{
+  "total_rows": 61340,
+  "renewable_forecast_DA_eligible_rows": 0,
+  "renewable_forecast_DA_ineligible_rows": 61340,
+  "load_forecast_DA_eligible_rows": 61340,
+  "load_forecast_DA_ineligible_rows": 0,
+  "renewable_DA_leakage_flag": true,
+  "load_DA_leakage_flag": false,
+  "gate": "10A.2",
+  "status": "PASS",
+  "interpretation": "SMARD forecast publication deadlines are used as documented availability bounds. Exact observation-level publication timestamps are not present in the downloaded forecast series."
+}

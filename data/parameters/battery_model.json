@@ -1,0 +1,33 @@
+{
+  "description": "Battery optimization parameters, not a battery telemetry dataset.",
+  "manuscript_reported": {
+    "power_mw": 2.5,
+    "energy_mwh": 5.0,
+    "charge_efficiency": 0.95,
+    "discharge_efficiency": 0.95,
+    "soc_min_fraction": 0.10,
+    "soc_max_fraction": 0.90,
+    "reserve_cap_mw": 1.5,
+    "throughput_cost_eur_per_mwh": 1.5,
+    "relcca_calendar_kappa_eur_per_mwh_hour": [0.247, 0.493, 0.822],
+    "relcca_band_count": 8,
+    "cell_replacement_cost_eur_per_kwh": 150.0
+  },
+  "not_reported_in_manuscript": {
+    "initial_soc_fraction": null,
+    "reserve_sustainment_hours": null,
+    "relcca_cycle_gamma_by_band": null,
+    "battery_chemistry": null,
+    "cell_temperature_series": null,
+    "measured_soc_or_degradation_series": null
+  },
+  "reconstruction_code_defaults_not_validated_against_original_runs": {
+    "initial_soc_fraction": 0.5,
+    "reserve_sustainment_hours": 1.0,
+    "relcca_gamma_charge_base": 1.5,
+    "relcca_gamma_discharge_base": 1.5,
+    "relcca_gamma_charge_scale_by_band": [0.8, 0.8, 1.0, 1.0, 1.0, 1.2, 1.2, 1.2],
+    "relcca_gamma_discharge_scale_by_band": [0.8, 0.8, 1.0, 1.0, 1.0, 1.2, 1.2, 1.2],
+    "source": "code/agingbid/core.py defaults; separate charge/discharge vectors currently have equal assumed values, not measured battery data"
+  }
+}

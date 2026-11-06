@@ -1,0 +1,24 @@
+{
+  "gate": "10D.2",
+  "status": "PASS",
+  "integrity": {
+    "n_scenarios": 5000,
+    "rows": 120000,
+    "each_has_24_hours": true,
+    "probability_sum": 1.0000000000000002,
+    "probability_sum_valid": true
+  },
+  "distribution_mean_abs_difference": 6.852948075879567,
+  "mean_absolute_std_relative_error_pct": 0.5460119665210343,
+  "correlation_mae": 0.0106312692435145,
+  "correlation_max_abs_error": 0.03137317025349612,
+  "tail_probability_mae": 0.001941921675774135,
+  "max_acf_error": 1.0102842119074436,
+  "interpretation": "Bias-corrected scenario distributions and cross-variable dependence are validated here. The initial 10D.1 generator is temporally IID, so ACF mismatch is diagnostic and leads to Gate 10D.3 temporal coherence reconstruction.",
+  "outputs": {
+    "distribution": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\scenarios\\gate10d2_bc_validation_summary.csv",
+    "correlation": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\scenarios\\gate10d2_bc_scenario_correlation.csv",
+    "acf": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\scenarios\\gate10d2_bc_acf_comparison.csv",
+    "tail": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\scenarios\\gate10d2_bc_tail_dependence.csv"
+  }
+}

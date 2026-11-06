@@ -1,0 +1,16 @@
+{
+  "gate": "10D.2",
+  "status": "PASS",
+  "integrity": {
+    "n_scenarios": 5000,
+    "rows": 120000,
+    "each_has_24_hours": true,
+    "probabilities_sum_to_one": true
+  },
+  "distribution_mean_relative_error_pct": 15.587007574324508,
+  "correlation_mae": 0.009763071435350108,
+  "correlation_max_abs_error": 0.028289305741179133,
+  "tail_probability_mae": 0.0018592896174863393,
+  "temporal_acf_max_error": 1.0041748273948081,
+  "important_interpretation": "Gate 10D.1 scenarios are joint in each hour but are initially sampled independently over time. Temporal mismatch is therefore expected and is used to determine whether Gate 10D.3 temporal coherence reconstruction is required."
+}

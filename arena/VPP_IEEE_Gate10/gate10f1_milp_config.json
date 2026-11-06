@@ -1,0 +1,41 @@
+{
+  "study_date": "2025-07-01",
+
+  "market": {
+    "hours": 24,
+    "reserve_margin": 0.10,
+    "dr_price_fraction": 0.50
+  },
+
+  "assets": {
+    "wind_onshore_mw": null,
+    "wind_offshore_mw": null,
+    "pv_mw": null,
+
+    "dg_mw": null,
+    "dg_min_mw": 0.0,
+    "dg_cost_eur_mwh": null,
+
+    "bess_energy_mwh": 20.0,
+    "bess_charge_mw": 1.0,
+    "bess_discharge_mw": 1.0,
+    "bess_initial_soc_mwh": 2.0,
+    "bess_min_soc_fraction": 0.10,
+    "bess_max_soc_fraction": 0.90,
+    "bess_eta_charge": 0.95,
+    "bess_eta_discharge": 0.95,
+    "bess_degradation_cost_eur_mwh": 0.0,
+
+    "dr_mw": null
+  },
+
+  "reliability": {
+    "dispatch_groups": 1,
+    "n_minus_1_required": true
+  },
+
+  "solver": {
+    "time_limit_seconds": 300,
+    "mip_gap": 0.01
+  }
+}

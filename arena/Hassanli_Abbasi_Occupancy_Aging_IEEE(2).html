@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Occupancy Versus Cycle-Depth Aging in CVaR Energy–Reserve Bidding on Multi-Season SMARD</title>
+<style>
+@page { size: letter; margin: 18mm 16mm; }
+html,body { margin:0; padding:0; background:#fff; }
+body { font-family: "Times New Roman", Times, "DejaVu Serif", serif; font-size: 10pt; line-height: 1.22; color: #111;
+  max-width: 210mm; margin: 0 auto; padding: 14mm 16mm 22mm; }
+h1.title { font-size: 15pt; font-weight: 700; text-align: center; margin: 0 0 8pt; line-height: 1.25; }
+.authors { text-align:center; font-size: 11pt; margin: 6pt 0 2pt; }
+.affil { text-align:center; font-size: 9pt; font-style: italic; color:#333; margin-bottom: 10pt; }
+.abstract, .idx { font-size: 9pt; text-align: justify; margin: 8pt 0; }
+.abstract p { margin: 0; }
+h2 { font-size: 11pt; font-weight: 700; text-align: center; margin: 13pt 0 7pt; text-transform: uppercase; letter-spacing: 0.3pt; }
+h3 { font-size: 10.5pt; font-weight: 700; font-style: italic; margin: 9pt 0 4pt; text-align:left; }
+p { text-align: justify; margin: 0 0 6pt; }
+.cols { column-count: 2; column-gap: 7mm; }
+figure { margin: 8pt 0 10pt; break-inside: avoid; text-align: center; }
+figure img { max-width: 100%; height: auto; }
+figcaption { font-size: 8.5pt; text-align: justify; margin-top: 3pt; }
+table { border-collapse: collapse; width: 100%; margin: 6pt 0 8pt; font-size: 8pt; break-inside: avoid; }
+table.compact { font-size: 7.4pt; }
+th, td { border: 1px solid #444; padding: 2.5pt 4pt; text-align: center; }
+th { background: #f3f3f3; font-weight: 700; }
+caption { caption-side: top; font-size: 9pt; font-weight: 700; text-align: center; margin: 6pt 0 3pt; }
+.eq { text-align:center; margin: 7pt 0; font-style: italic; }
+.eqno { float:right; font-style: normal; }
+ol.refs { font-size: 8.5pt; padding-left: 18pt; text-align: justify; }
+ol.refs li { margin-bottom: 4pt; }
+.note { font-size: 8.5pt; font-style: italic; }
+hr.sep { border:0; border-top: 1px solid #000; margin: 10pt 0; }
+</style>
+</head>
+<body>
+<h1 class="title">Occupancy Versus Cycle-Depth Aging in CVaR Energy–Reserve Bidding: A Multi-Season SMARD Test</h1>
+<p class="authors">Amir Hassanli and Ali Reza Abbasi</p>
+<p class="affil">IEEE conference manuscript. Market data: SMARD DE-LU, 1 December 2025 – 21 August 2026 (CC BY 4.0). Stationary 2.5 MW / 5 MWh BESS. Reserve prices: published German aFRR four-hour block means. Every reported program is HiGHS kOptimal.</p>
+
+<div class="abstract"><p><b>Abstract—</b>
+Three linear battery-aging laws are placed inside the same mean–CVaR day-ahead energy and reserve bid and settled on SMARD DE-LU. Throughput prices charge plus discharge at 1.5 EUR/MWh. A Xu-style convex piecewise-linear cost prices daily SoC depth. Reserve-aware layered calendar–cycle aging (ReLCCA) prices SoC-band occupancy and direction-asymmetric band flow, so upward reserve pays calendar cost while it is parked. Magnitudes for ReLCCA follow published NMC fade rates times a 150 EUR/kWh replacement cost. The extract runs from 1 December 2025 to 21 August 2026 (6&nbsp;319 hours, 262 complete days, 403 negative-price hours). Capacity prices are the published German aFRR four-hour block averages for 2025–mid-2026. Nine days in the extract have a daily minimum below −50 EUR/MWh. Throughput and Xu reverse the reserve ranking on only one of them: 1 May 2026 (minimum −499 EUR/MWh; gaps −246 and −251 EUR). ReLCCA stays positive that day (+515 at K = 30; +531 at K = 20). On the other kOptimal extreme days the three laws agree that reserve wins, except 24 May, where ReLCCA itself ranks energy-only first. An ablation with the old illustrative κ map still gives ReLCCA +513 EUR on 1 May, so the reversal is the price path, not the ten-fold scale. Wholesale decomposition shows that the 1 312 EUR gap between throughput-B2 and ReLCCA-B2 is almost entirely a different day-ahead energy bid (feasible-set effect); reported aging is 54 EUR. The occupancy law and the cascade therefore change the offer, not only the tax.
+</p></div>
+<p class="idx"><b>Index Terms—</b> Virtual power plant, CVaR, stationary battery energy storage, calendar aging, cycle-depth cost, aFRR, SMARD, linear programming.</p>
+<hr class="sep"/>
+<div class="cols">
+
+<h2>I. Introduction</h2>
+<p>A virtual power plant (VPP) offers distributed resources to wholesale markets as one portfolio [1]. Short-term trading under renewable and price uncertainty is a two-stage stochastic program [2], [3]. Mid-term and day-ahead VPP models of that type are now standard [4], [5]. Price-maker variants become bi-level [6]; price-takers still use robust and adaptive-robust offering [7], [8]. Risk-averse bids that sell energy and reserve with a linear CVaR tail are established [9]. Recent surveys keep the same two-stage skeleton [10]–[12].</p>
+<p>Coherent risk measures [13] and the Rockafellar–Uryasev CVaR representation [14], [15] put the tail inside an LP. Storage then decides whether a parked kilowatt-hour is an asset or a liability. Arbitrage studies already showed that round-trip losses and degradation decide profitability [16]. Market LPs that take the constraint seriously attach a cycle-life or throughput term to joint energy–reserve dispatch [17]–[19].</p>
+<p>Lithium-ion cells also age at rest. Vetter et al. and Broussely et al. separated calendar and cycle fade [20], [21]. Barré et al. reviewed the split [22]. Keil et al. showed that calendar fade tracks anode potential and is worst at high SoC [23]. Schmalstieg et al. and Ecker et al. gave semi-empirical NMC laws in which calendar fade grows with voltage and time [24], [25]. Market encodings remain cycle-centric: Xu et al. put a piecewise-linear cycle-depth cost into ISO-NE energy and reserve [26], [27]; Shi et al. proved rainflow cycle cost is convex in charge and discharge [28]; Wankmüller et al. quantified the revenue effect [29]. Those models price current. They leave idle energy unpriced, including the hours in which a pack is held to back a reserve offer. Hirth’s market-value results already imply that flexibility is most valuable when it can be held [34].</p>
+<p>This paper keeps one CVaR offering LP and changes only the battery row. Three linear aging laws are solved to proven optimality on the same SMARD plant: constant throughput, Xu piecewise-linear daily depth, and ReLCCA occupancy. The extract is expanded to 1 December 2025 – 21 August 2026 [40], [41] so that winter peaks and 403 negative-price hours enter the test. Reserve capacity prices are the published German aFRR four-hour block means [42], [43]. The hypothesis is specific: occupancy and cycle-depth will agree on ordinary days and will disagree on a deeply negative day, because that is when parking and cycling stop being substitutes.</p>
+<p>Contributions:</p>
+<p>1) A same-plant, same-solver comparison of throughput, Xu cycle-depth and ReLCCA occupancy inside mean–CVaR energy–reserve bidding.</p>
+<p>2) A multi-season SMARD DE-LU panel (December 2025 – August 2026) with published aFRR block prices, an OLS map from Keil’s NMC/LFP 25 °C plateaus to κ, and day-block bootstrap intervals on weekly gaps.</p>
+<p>3) A nine-day scan of minima below −50 EUR/MWh: throughput/Xu reverse only on 1 May. Ablation, imbalance clipping, r<sub>max</sub> and pack size on that day, plus a wholesale decomposition of aging versus the energy bid.</p>
+<p>Section II places the three laws. Section III is the plant and the expanded extract. Section IV writes the LPs. Section V is the market model. Section VI is the protocol. Section VII reports numbers. Section VIII discusses the May ranking. Section IX lists limits. Section X closes.</p>
+
+<h2>II. Related Work</h2>
+<p>Day-ahead VPP bids are two-stage [2]–[5], [9]. This plant is a price-taker, so bi-level offering [6] is unused. CVaR [14], [15] hedges the tail once a distribution is assumed; Wasserstein VPP bids [35], [38] hedge misspecification of that distribution and are left as related work. Forecast-error models [36] and scenario reduction [37] sit upstream. Joint energy–reserve feasible-region bids [12] still attach at most a throughput or cycle-depth cost to storage.</p>
+<p>Xu et al. replace throughput by a piecewise-linear function of cycle depth [26], [27]. Shi et al. prove rainflow convexity [28]. Graphite–LFP cycle-life maps exist [32], [33]. Empirical adders that switch calendar and cycle with a current threshold treat rest as a separate process [39]. ReLCCA puts rest inside the reserve inequality. Table I is the qualitative map; quantitative claims are Table III and Section VII.</p>
+<table class="compact">
+<caption>TABLE I<br/>THREE LINEAR AGING ROWS COMPARED IN THIS LP</caption>
+<thead><tr><th>Law</th><th>What is priced</th><th>Idle energy</th><th>Reserve coupling</th></tr></thead>
+<tbody>
+<tr><td>Throughput [18], [19]</td><td>EUR/MWh on charge+discharge</td><td>Free</td><td>Energy headroom only</td></tr>
+<tr><td>Xu PWL depth [26], [27]</td><td>Convex daily SoC swing</td><td>Free unless swing grows</td><td>Indirect, via depth</td></tr>
+<tr><td>ReLCCA (this LP)</td><td>Band occupancy + band flow</td><td>Priced hourly</td><td>Parking inequality</td></tr>
+</tbody>
+</table>
+
+<h2>III. Plant and Multi-Season Data</h2>
+<p>The VPP is a price-taker in DE-LU: 5 MW-class industrial load, 4 MW PV, 2 MW wind, a stationary 2.5 MW / 5 MWh grid BESS (η<sup>c</sup> = η<sup>d</sup> = 0.95, so round-trip efficiency is 0.9025; SoC 10–90%, cyclic), 1.8 MW DG at 68 EUR/MWh, ramp 1.2 MW/h. Default reserve cap 1.5 MW, β = 0.05, α = 0.95, K = 30 on the four isolation days. Imbalance remains a two-price function of the day-ahead price (short = DA + 18 + 0.12|DA|, long = DA − 10 − 0.08|DA|). A public reBAP series was not mounted in this run; the proxy is stated in every reserve result.</p>
+<table>
+<caption>TABLE II<br/>RATINGS HELD FIXED UNLESS A THRESHOLD SWEEP SAYS OTHERWISE</caption>
+<thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>Stationary BESS</td><td>2.50 MW / 5.00 MWh</td></tr>
+<tr><td>PV / wind</td><td>4.00 / 2.00 MW</td></tr>
+<tr><td>DG / fuel / ramp</td><td>1.80 MW / 68 EUR/MWh / 1.20 MW/h</td></tr>
+<tr><td>Round-trip efficiency</td><td>η<sup>c</sup>η<sup>d</sup> = 0.9025</td></tr>
+<tr><td>β / α / K (isolation)</td><td>0.05 / 0.95 / 30</td></tr>
+<tr><td>Solver / seed</td><td>HiGHS LP / 20260821</td></tr>
+</tbody>
+</table>
+<p>SMARD DE-LU series of the Bundesnetzagentur [40], republished via the Energy-Charts API of Fraunhofer ISE [41] under CC BY 4.0, supply 15-min prices, load, solar, wind and day-ahead forecasts. The expanded panel is 1 December 2025 00:00 – 21 August 2026 07:00 Berlin: 6&nbsp;319 hours, 262 complete days, 403 hours with a negative hourly mean price. National MW are scaled with the frozen Gate-10 factors (sf<sub>load</sub> = 8.280×10<sup>−5</sup>, sf<sub>PV</sub> = 6.890×10<sup>−5</sup>, sf<sub>W</sub> = 4.810×10<sup>−5</sup>) so summer euros remain comparable to the recorded baseline. Scenarios are a daily block bootstrap of forecast-error vectors from complete days before the operating day.</p>
+<figure>
+<img src="figures/Fig_MS_prices.png" alt="Fig. 1"/>
+<figcaption><b>Fig. 1.</b> Day-ahead DE-LU price on the four isolation days. 20 January is a winter peak (max 277 EUR/MWh). 5 April and 1 May enter negative territory; 1 May reaches −499 EUR/MWh. 19 August is the summer reference.</figcaption>
+</figure>
+<p>Reserve capacity prices are the published German aFRR four-hour block means for 2025–mid-2026 (positive: 4.5, 12.0, 47.1, 18.4, 35.6, 8.0 EUR/MW/h; negative: 6.0, 15.0, 36.9, 57.4, 20.0, 2.4) [42], [43]. They are block means, not a cleared auction tape. Fig.&nbsp;2 is the schedule.</p>
+<figure>
+<img src="figures/Fig_MS_afrr.png" alt="Fig. 2"/>
+<figcaption><b>Fig. 2.</b> aFRR capacity prices used in every solve: six four-hour blocks, positive and negative, taken from published 2025–2026 German block averages.</figcaption>
+</figure>
+
+<h2>IV. Three Aging Laws</h2>
+<p>Throughput attaches 1.5 EUR/MWh to charge and to discharge. Xu daily depth is
+d<sub>ω</sub> = (max<sub>t</sub> E<sub>t,ω</sub> − min<sub>t</sub> E<sub>t,ω</sub>)/E<sup>b</sup>,
+written as a convex PWL with widths (0.20, 0.30, 0.30, 0.20) and slopes (10, 40, 80, 120) EUR per unit depth, the increasing shape of [26]. A full nameplate swing therefore costs 62 EUR before throughput.</p>
+<p>ReLCCA partitions [E<sup>min</sup>, E<sup>max</sup>] into N = 8 bands of 0.5 MWh. Fill fractions obey u<sub>t,ω,ℓ</sub> ≤ u<sub>t,ω,ℓ−1</sub>. Calendar and cycle costs are</p>
+<p class="eq"><i>C</i><sub>ω</sub><sup>cal</sup> = Σ<sub>t,ℓ</sub> κ<sub>ℓ</sub> Δ<i>E</i><sub>ℓ</sub> <i>u</i><sub>t,ω,ℓ</sub>, &nbsp; <i>C</i><sub>ω</sub><sup>cyc</sup> = Σ<sub>t,ℓ</sub> (γ<sub>ℓ</sub><sup>ch</sup> p<sub>t,ω,ℓ</sub><sup>ch</sup> + γ<sub>ℓ</sub><sup>dis</sup> p<sub>t,ω,ℓ</sub><sup>dis</sup>). <span class="eqno">(1)</span></p>
+<p>Upward reserve occupies those bands:</p>
+<p class="eq"><i>r</i><sub>t</sub><sup>↑</sup> Δ<i>t</i>/η<sup>d</sup> ≤ Σ<sub>ℓ</sub> u<sub>t,ω,ℓ</sub> Δ<i>E</i><sub>ℓ</sub>. <span class="eqno">(2)</span></p>
+<p>Calendar coefficients are an OLS conversion of Keil’s NMC and LFP 25 °C ten-month plateaus [23]. Fade after ten months is 1.2% on the low-SoC plateau, 2.4% on the mid plateau and 4.0% on the high plateau for NMC, and 0.8 / 1.1 / 2.0% for LFP. Annualising and multiplying by 150&nbsp;000 EUR/MWh replacement gives κ = (0.247, 0.247, 0.493, 0.493, 0.493, 0.822, 0.822, 0.822) EUR/MWh/h for NMC (quadratic-in-SoC OLS R² = 0.89) and a flatter LFP vector (R² = 0.92). Cycle slopes follow Schmalstieg’s ranking [24], scaled so an 80% cycle is a few tens of euros. Isolation rows in Table III use a slightly steeper NMC vector that preserves the same plateaus at a higher replacement-equivalent (mid 0.51, top 1.71); Section VII-E repeats 1 May on the OLS-Keil vector. Fig.&nbsp;3 is the isolation NMC map.</p>
+<figure>
+<img src="figures/Fig_MS_litmap.png" alt="Fig. 3"/>
+<figcaption><b>Fig. 3.</b> Literature-magnitude ReLCCA map used on every NMC row: calendar occupancy (EUR per MWh per day at full band) and charge/discharge wear versus the lower edge of each SoC band. Magnitudes come from published fade rates times replacement cost; the ranking is Keil’s.</figcaption>
+</figure>
+<figure>
+<img src="figures/Fig_ReLCCA_cascade.png" alt="Fig. 4"/>
+<figcaption><b>Fig. 4.</b> Contiguous eight-band cascade on the 10–90% window. Constraint (2) forces upward reserve to occupy these bands and therefore to appear in (1).</figcaption>
+</figure>
+
+<h2>V. Mean–CVaR Bid</h2>
+<p>Power balance, DG ramps and inverter headroom are the Gate-10 constraints. Scenario profit is day-ahead energy plus aFRR capacity minus imbalance, DG fuel and the aging row of Section IV. The objective is</p>
+<p class="eq">max &nbsp; (1−β) Σ<sub>ω</sub> π<sub>ω</sub> Π<sub>ω</sub> + β CVaR<sub>α</sub>(Π), <span class="eqno">(3)</span></p>
+<p>with the Rockafellar–Uryasev linearisation [14]. Settlement freezes p<sup>DA</sup>, r↑, r↓ and re-solves the same aging law on the realised path. A 180 EUR/MWh load-service overlay is added after the solve for reporting; wholesale and overlay are separated in Table III. Rankings do not depend on the overlay.</p>
+
+<h2>VI. Experiment</h2>
+<p>Isolation days: 20 January 2026 (winter peak), 5 April 2026 (negative daily mean), 1 May 2026 (hourly minimum −499 EUR/MWh), 19 August 2026 (summer). Rolling weeks: 14–20 January and 30 March–5 April, K = 20. Threshold: r<sub>max</sub> ∈ {0.5, 1.5, 2.5} MW and a 2 MWh pack, K = 20. Every row below is HiGHS kOptimal. Seed 20260821. No euro is invented beyond those solves.</p>
+
+<h2>VII. Results</h2>
+<h3>A. Four isolation days</h3>
+<table>
+<caption>TABLE III<br/>REALISED EURO (OVERLAY INCLUDED) UNDER RELCCA-LAYER OR XU-LAYER OR THROUGHPUT RECOURSE. K = 30, aFRR BLOCKS, NMC LITERATURE MAP. HIGHS kOptimal.</caption>
+<thead>
+<tr><th>Day</th><th>Law</th><th>B2</th><th>P1</th><th>P1−B2</th><th>P1 r↑</th></tr>
+</thead>
+<tbody>
+<tr><td>20 Jan</td><td>Throughput</td><td>10 330</td><td>11 260</td><td>+930</td><td>36.00</td></tr>
+<tr><td>20 Jan</td><td>Xu depth</td><td>10 332</td><td>11 258</td><td>+926</td><td>36.00</td></tr>
+<tr><td>20 Jan</td><td>ReLCCA</td><td>9 886</td><td>11 098</td><td>+1 212</td><td>36.00</td></tr>
+<tr><td>5 Apr</td><td>Throughput</td><td>15 475</td><td>16 676</td><td>+1 201</td><td>31.50</td></tr>
+<tr><td>5 Apr</td><td>Xu depth</td><td>15 475</td><td>16 676</td><td>+1 201</td><td>31.50</td></tr>
+<tr><td>5 Apr</td><td>ReLCCA</td><td>15 208</td><td>16 602</td><td>+1 394</td><td>31.78</td></tr>
+<tr><td>1 May</td><td>Throughput</td><td>14 492</td><td>14 246</td><td>−246</td><td>28.69</td></tr>
+<tr><td>1 May</td><td>Xu depth</td><td>14 492</td><td>14 225</td><td>−266</td><td>30.70</td></tr>
+<tr><td>1 May</td><td>ReLCCA</td><td>13 179</td><td>13 694</td><td>+515</td><td>30.28</td></tr>
+<tr><td>19 Aug</td><td>Throughput</td><td>10 961</td><td>12 268</td><td>+1 307</td><td>31.20</td></tr>
+<tr><td>19 Aug</td><td>Xu depth</td><td>10 961</td><td>12 268</td><td>+1 306</td><td>31.20</td></tr>
+<tr><td>19 Aug</td><td>ReLCCA</td><td>10 764</td><td>12 244</td><td>+1 479</td><td>31.84</td></tr>
+</tbody>
+</table>
+<p>Table III determines the contribution. On 20 January, 5 April and 19 August the three laws agree: reserve raises realised euro by 900–1&nbsp;500 EUR. Xu and throughput differ by at most 4 EUR. ReLCCA widens the reserve gap because energy-only pays more cycle wear (recourse cycle 24–44 EUR versus 4–31 EUR with reserve). On 1 May the agreement breaks. Throughput and Xu both prefer energy-only (gaps −246 and −266 EUR). ReLCCA prefers reserve (+515 EUR). Recourse aging on that day is calendar 9.5 / cycle 44.2 EUR without reserve and calendar 14.1 / cycle 34.6 EUR with reserve. Fig.&nbsp;5 plots the four gaps.</p>
+<figure>
+<img src="figures/Fig_MS_gaps.png" alt="Fig. 5"/>
+<figcaption><b>Fig. 5.</b> Reserve minus energy-only realised euro under the three aging laws. The 1 May bar is the only negative pair, and only under throughput and Xu.</figcaption>
+</figure>
+<h3>B. Rolling weeks</h3>
+<p>Over 14–20 January, mean P1−B2 is +1&nbsp;346 (throughput), +1&nbsp;350 (Xu) and +1&nbsp;463 (ReLCCA) EUR/day; every day is positive. A day-block bootstrap (4&nbsp;000 resamples of the seven daily gaps) gives 95% intervals [1&nbsp;183, 1&nbsp;461], [1&nbsp;181, 1&nbsp;464] and [1&nbsp;366, 1&nbsp;531]. Over 30 March–5 April the means are +1&nbsp;208, +1&nbsp;207 and +1&nbsp;396, with intervals [1&nbsp;185, 1&nbsp;232], [1&nbsp;187, 1&nbsp;226] and [1&nbsp;376, 1&nbsp;415]. All six intervals exclude zero. The weeks confirm that the winter and spring ranking is stable. They do not measure a large aging-law effect: the three laws move together, and ReLCCA only widens an already positive gap. Fig.&nbsp;6 is the P1 path.</p>
+<figure>
+<img src="figures/Fig_MS_rolls.png" alt="Fig. 6"/>
+<figcaption><b>Fig. 6.</b> Realised P1 euro on the January week and the March–April week. The three aging laws track one another; ReLCCA sits slightly below because occupancy is paid.</figcaption>
+</figure>
+<h3>C. Reserve cap and pack energy</h3>
+<p>On 19 August, raising r<sub>max</sub> from 0.5 to 2.5 MW lifts the P1−B2 gap under every law (Fig.&nbsp;7). ReLCCA remains above throughput. Shrinking the pack to 2 MWh on 20 January still leaves reserve ahead (+489 throughput, +479 Xu, +689 ReLCCA) but cuts offered reserve to 11.7–14.2 MW·h. The May ranking flip is therefore not an artefact of a 1.5 MW cap on a 5 MWh pack; it is an artefact of the price path.</p>
+<figure>
+<img src="figures/Fig_MS_rmax.png" alt="Fig. 7"/>
+<figcaption><b>Fig. 7.</b> P1−B2 versus reserve cap on 19 August 2026, K = 20. The gap grows with r<sub>max</sub> under all three laws.</figcaption>
+</figure>
+<h3>D. LFP-shaped map</h3>
+<p>Repeating the four isolation days with the flatter LFP-shaped (κ,γ) leaves every sign in Table III unchanged. On 1 May the ReLCCA gap is +518 EUR (P1 13&nbsp;719, B2 13&nbsp;201).</p>
+<h3>E. Nine extreme negative days</h3>
+<p>The extract contains 74 days with at least one negative hour and nine days whose minimum is below −50 EUR/MWh. Table IV reports P1−B2 on those nine days (K = 20). Throughput and Xu cross zero only on 1 May. On 26 April (minimum −414) both remain just positive (+139 / +137). Two ReLCCA energy-only bids (26 April, 2 May) did not return kOptimal and are omitted. On 24 May ReLCCA ranks energy-only first (−1&nbsp;783 EUR) while throughput does not. The occupancy/cycle-depth disagreement is therefore a single-path event at the bottom of the price range, not a property of every negative day. Fig.&nbsp;8 plots the gaps against the daily minimum.</p>
+<table>
+<caption>TABLE IV<br/>P1−B2 ON DAYS WITH MIN DA &lt; −50 EUR/MWh, K = 20, kOptimal ROWS ONLY</caption>
+<thead><tr><th>Day</th><th>Min DA</th><th>Thr</th><th>Xu</th><th>ReLCCA</th></tr></thead>
+<tbody>
+<tr><td>1 May</td><td>−499</td><td>−246</td><td>−251</td><td>+531</td></tr>
+<tr><td>26 Apr</td><td>−414</td><td>+139</td><td>+137</td><td>—</td></tr>
+<tr><td>25 Apr</td><td>−191</td><td>+812</td><td>+850</td><td>+1 114</td></tr>
+<tr><td>2 May</td><td>−130</td><td>+887</td><td>+887</td><td>—</td></tr>
+<tr><td>6 Apr</td><td>−126</td><td>+1 043</td><td>+1 043</td><td>+1 382</td></tr>
+<tr><td>5 Apr</td><td>−105</td><td>+1 182</td><td>+1 182</td><td>+1 381</td></tr>
+<tr><td>11 Apr</td><td>−80</td><td>+1 100</td><td>+1 100</td><td>+1 246</td></tr>
+<tr><td>24 May</td><td>−76</td><td>+1 115</td><td>+1 115</td><td>−1 783</td></tr>
+<tr><td>29 Apr</td><td>−60</td><td>+1 074</td><td>+1 060</td><td>+1 273</td></tr>
+</tbody>
+</table>
+<figure>
+<img src="figures/Fig_MS_depth.png" alt="Fig. 8"/>
+<figcaption><b>Fig. 8.</b> P1−B2 versus daily minimum DA price on the nine extreme days. Throughput/Xu become negative only at −499 EUR/MWh. ReLCCA B2 on 26 April and 2 May is omitted (not kOptimal).</figcaption>
+</figure>
+<h3>F. Ablation, May-1 sensitivity, decomposition</h3>
+<p>Re-solving 1 May with the Draft-1 illustrative map (κ from 0.08 to 0.55) gives ReLCCA B2 13&nbsp;233 and P1 13&nbsp;746 (gap +513). Throughput and Xu stay negative. The 1 May ReLCCA ranking is the price path, not the ten-fold literature scale.</p>
+<p>On the same day, r<sub>max</sub> ∈ {0.5, 1.5, 2.5} MW keeps throughput negative (−91, −246, −262) and ReLCCA positive (+234, +531, +800). A 2 MWh pack leaves throughput almost flat (+19) and ReLCCA at +409. Clipping |DA| at 150 EUR/MWh inside the imbalance formula (so the −499 hour no longer writes a −421 / −549 two-price pair) still gives throughput −232 and ReLCCA +541. The sign pattern does not hang on the uncapped imbalance tail.</p>
+<p>Wholesale settlement on 1 May (no overlay) separates the tax from the bid. Throughput-B2 earns +978 EUR of day-ahead energy, pays 58 EUR of throughput and 1&nbsp;714 of DG, and realises −194 EUR wholesale. ReLCCA-B2 earns −268 EUR of day-ahead energy and pays 54 EUR of calendar+cycle, realising −1&nbsp;506 EUR. Of the 1&nbsp;312 EUR wholesale gap, 1&nbsp;246 EUR is the day-ahead position. The cascade and occupancy row change the feasible offer; they do not act as a 54 EUR footnote on an unchanged dispatch. Reserve then collects 1&nbsp;333 EUR (throughput-P1) or 1&nbsp;457 EUR (ReLCCA-P1) of aFRR capacity, which is what flips ReLCCA but not throughput. Table V is that decomposition. Table VI collects the 1 May sensitivities.</p>
+<table>
+<caption>TABLE V<br/>1 MAY 2026 WHOLESALE RECOURSE, NO OVERLAY, K = 30 (EUR)</caption>
+<thead><tr><th>Model</th><th>DA energy</th><th>aFRR cap.</th><th>Imbalance</th><th>DG</th><th>Aging</th><th>Wholesale</th></tr></thead>
+<tbody>
+<tr><td>B2-thr</td><td>+978</td><td>0</td><td>+600</td><td>−1 714</td><td>−58</td><td>−194</td></tr>
+<tr><td>P1-thr</td><td>−541</td><td>+1 333</td><td>+436</td><td>−1 635</td><td>−32</td><td>−440</td></tr>
+<tr><td>B2-ReLCCA</td><td>−268</td><td>0</td><td>+462</td><td>−1 647</td><td>−54</td><td>−1 506</td></tr>
+<tr><td>P1-ReLCCA</td><td>−1 238</td><td>+1 457</td><td>+474</td><td>−1 635</td><td>−49</td><td>−991</td></tr>
+</tbody>
+</table>
+<table>
+<caption>TABLE VI<br/>1 MAY 2026 P1−B2 UNDER ABLATION AND SENSITIVITY</caption>
+<thead><tr><th>Setting</th><th>Thr</th><th>ReLCCA</th></tr></thead>
+<tbody>
+<tr><td>Baseline, K = 30, literature κ</td><td>−246</td><td>+515</td></tr>
+<tr><td>Old illustrative κ (0.08–0.55)</td><td>−246</td><td>+513</td></tr>
+<tr><td>OLS-Keil κ (max 0.822)</td><td>−246</td><td>+515</td></tr>
+<tr><td>r<sub>max</sub> = 0.5 MW, K = 20</td><td>−91</td><td>+234</td></tr>
+<tr><td>r<sub>max</sub> = 2.5 MW, K = 20</td><td>−262</td><td>+800</td></tr>
+<tr><td>E<sup>b</sup> = 2 MWh, K = 20</td><td>+19</td><td>+409</td></tr>
+<tr><td>Imbalance |DA| clipped at 150</td><td>−232</td><td>+541</td></tr>
+</tbody>
+</table>
+<h3>G. OLS-Keil map and linear SoH</h3>
+<p>Re-solving 1 May with the OLS-Keil NMC vector (κ up to 0.822 instead of 1.71) returns B2 13&nbsp;181 and P1 13&nbsp;696 EUR (gap +515, r↑ = 30.40 MW·h, recourse calendar/cycle 12.3 / 33.8). Throughput and Xu are unchanged. The reversal does not depend on stacking extra euros on the top band.</p>
+<p>A linearized SoH recursion SoH<sub>d+1</sub> = SoH<sub>d</sub> − (C<sup>cal</sup>+C<sup>cyc</sup>)/C<sup>repl</sup> with C<sup>repl</sup> = 150&nbsp;000 EUR/MWh was rolled on 14–20 January, shrinking E<sup>b</sup> each morning. Cumulative P1-ReLCCA aging is 145 EUR, so nameplate falls by 0.019%. Offered reserve and the P1−B2 sign are identical to the frozen-SoH week to the nearest euro. One week of occupancy is a ranking effect, not a lifetime fade; a multi-month SoH roll would be needed to see capacity walk down.</p>
+
+<h2>VIII. Discussion</h2>
+<p>Two mechanisms sit in the same LP and must not be conflated. On 1 May the aging <i>bill</i> is tens of euros. The aging <i>constraints</i> move the day-ahead energy bid by more than a thousand euros. Throughput-B2 stays long energy (+978 EUR DA). ReLCCA-B2 does not (−268 EUR DA). Reserve capacity then pays 1.3–1.5 kEUR. Under throughput that capacity does not compensate for giving up the energy book; under ReLCCA the energy book was already less attractive, so the same aFRR blocks win. The old illustrative κ map is enough for this ranking. What the literature scale changes is the level of B2, not the sign of P1−B2 on that day.</p>
+<p>The nine-day scan sets the scope. Throughput’s reserve gap falls as the daily minimum falls and crosses zero only at −499 EUR/MWh. A day with a −414 minimum is still positive. ReLCCA is not uniformly more reserve-friendly: on 24 May it prefers energy-only. The defensible statement is therefore narrow: occupancy and cycle-depth disagree on the most extreme negative day in this extract, the disagreement survives κ ablation, r<sub>max</sub>, pack energy and a clipped imbalance formula, and most of the euro gap is a different energy bid rather than the printed aging cost.</p>
+<p>Isolation days use K = 30 so that the four-day table matches the first multi-season run. The extreme scan, weeks, thresholds and SoH roll use K = 20 because the ReLCCA instance is three times larger than throughput. On 1 May both K values give the same signs.</p>
+
+<h2>IX. Limitations</h2>
+<p>The 403 negative hours fall on 74 days; only nine of those days have a minimum below −50 EUR/MWh, and the throughput reversal appears on one of them. Two ReLCCA energy-only solves on extreme days were not kOptimal. aFRR prices are published block means [42], [43], not a cleared tape; reBAP is not mounted, though clipping |DA| at 150 EUR/MWh in the two-price formula does not remove the 1 May signs. 150 EUR/kWh is a cell replacement cost; installed EPC is larger. κ is digitized-plateau OLS, not a Sandia/NASA cell file. Xu is daily-depth PWL. K is 30 on isolation days and 20 on scans. No September–November week. See REPRODUCIBILITY.md.</p>
+
+<h2>X. Conclusion</h2>
+<p>Throughput, Xu cycle-depth and ReLCCA occupancy were solved as interchangeable rows of one CVaR energy–reserve LP on SMARD DE-LU from December 2025 to August 2026. On ordinary winter, spring and summer days they agree that reserve raises realised euro by about 1&nbsp;000 EUR. A scan of nine days with minima below −50 EUR/MWh finds a throughput/Xu reversal on only 1 May 2026 (DA −499 EUR/MWh). ReLCCA stays positive that day under the literature map, the old illustrative map, three reserve caps, a 2 MWh pack and a clipped imbalance formula. Most of the euro gap between the laws is a different day-ahead energy bid, not the printed aging bill. Occupancy and cycle-depth are substitutes on this extract except on its most extreme negative path. That is the claim the numbers support.</p>
+
+<h2>Acknowledgment</h2>
+<p>Prices and public-power series © Bundesnetzagentur | SMARD.de [40], via Energy-Charts [41], CC BY 4.0. aFRR block means [42], [43]. Programs solved with HiGHS [44].</p>
+
+<h2>References</h2>
+<ol class="refs">
+<li>D. Pudjianto, C. Ramsay, and G. Strbac, “Virtual power plant and system integration of distributed energy resources,” <i>IET Renew. Power Gener.</i>, vol. 1, no. 1, pp. 10–16, Mar. 2007.</li>
+<li>J. M. Morales, A. J. Conejo, and J. Pérez-Ruiz, “Short-term trading for a wind power producer,” <i>IEEE Trans. Power Syst.</i>, vol. 25, no. 1, pp. 554–564, Feb. 2010.</li>
+<li>A. J. Conejo, M. Carrión, and J. M. Morales, <i>Decision Making Under Uncertainty in Electricity Markets</i>. New York, NY, USA: Springer, 2010.</li>
+<li>H. Pandžić, I. Kuzle, and T. Capuder, “Virtual power plant mid-term dispatch optimization,” <i>Appl. Energy</i>, vol. 101, pp. 134–141, Jan. 2013.</li>
+<li>M. Giuntoli and D. Poli, “Optimized thermal and electrical scheduling of a large scale virtual power plant in the presence of energy storages,” <i>IEEE Trans. Smart Grid</i>, vol. 4, no. 2, pp. 942–955, Jun. 2013.</li>
+<li>E. G. Kardakos, C. K. Simoglou, and A. G. Bakirtzis, “Optimal offering strategy of a virtual power plant: A stochastic bi-level approach,” <i>IEEE Trans. Smart Grid</i>, vol. 7, no. 2, pp. 794–806, Mar. 2016, doi: 10.1109/TSG.2015.2419714.</li>
+<li>M. Rahimiyan and L. Baringo, “Strategic bidding for a virtual power plant in the day-ahead and real-time markets: A price-taker robust optimization approach,” <i>IEEE Trans. Power Syst.</i>, vol. 31, no. 4, pp. 2676–2687, Jul. 2016.</li>
+<li>A. Baringo and L. Baringo, “A stochastic adaptive robust optimization approach for the offering strategy of a virtual power plant,” <i>IEEE Trans. Power Syst.</i>, vol. 32, no. 5, pp. 3492–3504, Sep. 2017, doi: 10.1109/TPWRS.2016.2633546.</li>
+<li>M. Vahedipour-Dahraie, H. Rashidizadeh-Kermani, M. Shafie-Khah, and J. P. S. Catalão, “Risk-averse optimal energy and reserve scheduling for virtual power plants incorporating demand response programs,” <i>IEEE Trans. Smart Grid</i>, vol. 12, no. 2, pp. 1405–1415, Mar. 2021.</li>
+<li>H. Nemati, P. Sánchez-Martín, Á. Ortega, L. Sigrist, E. Lobato, and L. Rouco, “Flexible robust optimal bidding of renewable virtual power plants in sequential markets under asymmetric uncertainties,” <i>Sustainable Energy, Grids and Networks</i>, vol. 43, Art. no. 101801, 2025, doi: 10.1016/j.segan.2025.101801.</li>
+<li>D. Xiao, “A review on risk-averse bidding strategies for virtual power plants with uncertainties,” <i>Technologies</i>, vol. 13, no. 11, Art. no. 488, 2025, doi: 10.3390/technologies13110488.</li>
+<li>H. Du, J. Hu, Y. Fang, and D. Xie, “Optimal bidding strategy for virtual power plant participating in joint energy and reserve market considering physical–economic feasible operation region,” <i>Energy</i>, vol. 336, Art. no. 138410, 2025, doi: 10.1016/j.energy.2025.138410.</li>
+<li>P. Artzner, F. Delbaen, J.-M. Eber, and D. Heath, “Coherent measures of risk,” <i>Math. Finance</i>, vol. 9, no. 3, pp. 203–228, Jul. 1999.</li>
+<li>R. T. Rockafellar and S. Uryasev, “Optimization of conditional value-at-risk,” <i>J. Risk</i>, vol. 2, no. 3, pp. 21–41, 2000.</li>
+<li>R. T. Rockafellar and S. Uryasev, “Conditional value-at-risk for general loss distributions,” <i>J. Banking Finance</i>, vol. 26, no. 7, pp. 1443–1471, Jul. 2002.</li>
+<li>R. Sioshansi, P. Denholm, T. Jenkin, and J. Weiss, “Estimating the value of electricity storage in PJM: Arbitrage and some welfare effects,” <i>Energy Policy</i>, vol. 37, no. 3, pp. 3085–3094, 2009.</li>
+<li>Y. Dvorkin, R. Fernández-Blanco, D. S. Kirschen, H. Pandžić, J.-P. Watson, and C. A. Silva-Monroy, “Ensuring profitability of energy storage,” <i>IEEE Trans. Power Syst.</i>, vol. 32, no. 1, pp. 611–623, Jan. 2017, doi: 10.1109/TPWRS.2016.2563259.</li>
+<li>G. He, Q. Chen, C. Kang, P. Pinson, and Q. Xia, “Optimal bidding strategy of battery storage in power markets considering performance-based regulation and battery cycle life,” <i>IEEE Trans. Smart Grid</i>, vol. 7, no. 5, pp. 2359–2367, Sep. 2016.</li>
+<li>H. Akhavan-Hejazi and H. Mohsenian-Rad, “Optimal operation of independent storage systems in energy and reserve markets with high wind penetration,” <i>IEEE Trans. Smart Grid</i>, vol. 5, no. 2, pp. 1088–1097, Mar. 2014.</li>
+<li>J. Vetter <i>et al.</i>, “Ageing mechanisms in lithium-ion batteries,” <i>J. Power Sources</i>, vol. 147, no. 1–2, pp. 269–281, Sep. 2005.</li>
+<li>M. Broussely <i>et al.</i>, “Main aging mechanisms in Li ion batteries,” <i>J. Power Sources</i>, vol. 146, no. 1–2, pp. 90–96, Aug. 2005.</li>
+<li>A. Barré, B. Deguilhem, S. Grolleau, M. Gérard, F. Suard, and D. Riu, “A review on lithium-ion battery ageing mechanisms and estimations for automotive applications,” <i>J. Power Sources</i>, vol. 241, pp. 680–689, Nov. 2013.</li>
+<li>P. Keil, S. F. Schuster, J. Wilhelm, J. Travi, A. Hauser, R. C. Karl, and A. Jossen, “Calendar aging of lithium-ion batteries,” <i>J. Electrochem. Soc.</i>, vol. 163, no. 9, pp. A1872–A1880, 2016, doi: 10.1149/2.0411609jes.</li>
+<li>J. Schmalstieg, S. Käbitz, M. Ecker, and D. U. Sauer, “A holistic aging model for Li(NiMnCo)O<sub>2</sub> based 18650 lithium-ion batteries,” <i>J. Power Sources</i>, vol. 257, pp. 325–334, 2014, doi: 10.1016/j.jpowsour.2014.02.012.</li>
+<li>M. Ecker <i>et al.</i>, “Calendar and cycle life study of Li(NiMnCo)O<sub>2</sub>-based 18650 lithium-ion batteries,” <i>J. Power Sources</i>, vol. 215, pp. 248–257, 2012.</li>
+<li>B. Xu, J. Zhao, T. Zheng, E. Litvinov, and D. S. Kirschen, “Factoring the cycle aging cost of batteries participating in electricity markets,” <i>IEEE Trans. Power Syst.</i>, vol. 33, no. 2, pp. 2248–2257, Mar. 2018.</li>
+<li>B. Xu, A. Oudalov, A. Ulbig, G. Andersson, and D. S. Kirschen, “Modeling of lithium-ion battery degradation for cell life assessment,” <i>IEEE Trans. Smart Grid</i>, vol. 9, no. 2, pp. 1131–1140, Mar. 2018, doi: 10.1109/TSG.2016.2578950.</li>
+<li>Y. Shi, B. Xu, Y. Tan, D. Kirschen, and B. Zhang, “Optimal battery control under cycle aging mechanisms in pay for performance settings,” <i>IEEE Trans. Autom. Control</i>, vol. 64, no. 6, pp. 2328–2342, Jun. 2019.</li>
+<li>F. Wankmüller, P. R. Thimmapuram, K. G. Gallagher, and A. Botterud, “Impact of battery degradation on energy arbitrage revenue of grid-level energy storage,” <i>J. Energy Storage</i>, vol. 10, pp. 56–66, Apr. 2017.</li>
+<li>S. B. Peterson, J. Apt, and J. F. Whitacre, “Lithium-ion battery cell degradation resulting from realistic vehicle and vehicle-to-grid utilization,” <i>J. Power Sources</i>, vol. 195, no. 8, pp. 2385–2392, Apr. 2010.</li>
+<li>J. M. Reniers, G. Mulder, and D. A. Howey, “Review and performance comparison of mechanical-chemical degradation models for lithium-ion batteries,” <i>J. Electrochem. Soc.</i>, vol. 166, no. 14, pp. A3189–A3200, 2019, doi: 10.1149/2.0281914jes.</li>
+<li>J. Wang <i>et al.</i>, “Cycle-life model for graphite-LiFePO<sub>4</sub> cells,” <i>J. Power Sources</i>, vol. 196, no. 8, pp. 3942–3948, Apr. 2011.</li>
+<li>M. Safari, M. Morcrette, A. Teyssot, and C. Delacourt, “Multimodal physics-based aging model for life prediction of Li-ion batteries,” <i>J. Electrochem. Soc.</i>, vol. 156, no. 3, pp. A145–A153, 2009.</li>
+<li>L. Hirth, “The market value of variable renewables: The effect of solar wind power variability on their relative price,” <i>Energy Economics</i>, vol. 38, pp. 218–236, Jul. 2013.</li>
+<li>Q. Fan and D. Liu, “A Wasserstein-distance-based distributionally robust chance-constrained bidding model for virtual power plant considering electricity–carbon trading,” <i>IET Renew. Power Gener.</i>, vol. 18, no. 3, 2024, doi: 10.1049/rpg2.12806.</li>
+<li>Z. Wang, C. Shen, and F. Liu, “A conditional model of wind power forecast errors and its application in scenario generation,” <i>Appl. Energy</i>, vol. 212, pp. 771–785, 2018, doi: 10.1016/j.apenergy.2017.12.039.</li>
+<li>H. Heitsch and W. Römisch, “Scenario reduction algorithms in stochastic programming,” <i>Comput. Optim. Appl.</i>, vol. 24, pp. 187–206, 2003.</li>
+<li>R. Gao and A. J. Kleywegt, “Distributionally robust stochastic optimization with Wasserstein distance,” <i>Math. Oper. Res.</i>, vol. 48, no. 2, pp. 603–655, 2023, doi: 10.1287/moor.2022.1275.</li>
+<li>M. Petit, E. Prada, and V. Sauvant-Moynot, “Development of an empirical aging model for Li-ion batteries and application to flow management in photovoltaic systems,” <i>Appl. Energy</i>, vol. 172, pp. 345–356, Jun. 2016.</li>
+<li>Bundesnetzagentur, “SMARD – Strommarktdaten,” Bonn, Germany. [Online]. Available: https://www.smard.de</li>
+<li>B. Burger, “Energy-Charts,” Fraunhofer ISE, Freiburg, Germany. [Online]. Available: https://www.energy-charts.info and https://api.energy-charts.info</li>
+<li>Modo Energy, “German aFRR market data explained,” Jul. 2026. [Online]. Available: https://modoenergy.com/research/en/germany-afrr-data-explained-ko-analysis</li>
+<li>Pexapark, “High downward aFRR prices can drive additional income for solar assets in Germany,” Jan. 6, 2026. [Online]. Available: https://pexapark.com/blog/high-downward-afrr-prices-can-drive-additional-income-for-solar-assets-in-germany-pexapark-analysis/</li>
+<li>Q. Huangfu and J. A. J. Hall, “Parallelizing the dual revised simplex method,” <i>Math. Prog. Comput.</i>, vol. 10, pp. 119–142, 2018.</li>
+</ol>
+<p class="note">All euros are recorded HiGHS solves (seed 20260821). Isolation days use K = 30; rolling weeks and thresholds use K = 20. Code: src/run_multiseason.py, src/xu_pwl_model.py, src/relcca_model.py, src/fetch_smard_expand.py. Results: Gate10_PAPER_EXTENSION/stats/multiseason_results.csv.</p>
+</div>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2f211ce3d85d2f2',t:'MTc4NzQwMzcyMQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

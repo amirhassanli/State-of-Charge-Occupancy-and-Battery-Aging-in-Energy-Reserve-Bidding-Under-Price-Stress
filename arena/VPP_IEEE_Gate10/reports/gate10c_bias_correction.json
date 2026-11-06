@@ -1,0 +1,19 @@
+{
+  "gate": "10C.1",
+  "method": "TRAIN mean-error bias correction",
+  "train_bias": {
+    "price_error": 0.2936971912720523,
+    "load_error": 400.8346368397086,
+    "wind_on_error": 23.131090619307834,
+    "wind_off_error": -45.43251935336976,
+    "pv_error": -99.51838570127505
+  },
+  "corrected_train_mean": {
+    "price_error": -4.222352375918887e-16,
+    "load_error": -2.3855598735027627e-13,
+    "wind_on_error": 1.3253110408348681e-14,
+    "wind_off_error": -4.804252523026397e-14,
+    "pv_error": 4.141597002608963e-15
+  },
+  "corrected_database": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\calibration\\joint_residual_database_hourly_bias_corrected.csv"
+}

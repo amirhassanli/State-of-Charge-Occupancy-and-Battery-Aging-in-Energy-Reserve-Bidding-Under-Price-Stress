@@ -1,0 +1,8 @@
+{
+  "gate": "10D.3D",
+  "method": "Pooled lag-pair ACF validation without crossing scenario boundaries",
+  "pooled_mean_acf_error": 0.003944604541670967,
+  "pooled_max_acf_error": 0.018733254944420685,
+  "block_local_mean_acf_error": 0.28255729545251246,
+  "interpretation": "Pooled ACF is the primary validation metric. Block-local ACF is reported only diagnostically."
+}

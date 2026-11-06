@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>CVaR Energy–Reserve Bidding of a VPP on SMARD Data</title>
+<style>
+@page { size: letter; margin: 18mm 16mm; }
+html,body { margin:0; padding:0; background:#fff; }
+body {
+  font-family: "Times New Roman", Times, "DejaVu Serif", serif;
+  font-size: 10pt; line-height: 1.22; color: #111;
+  max-width: 210mm; margin: 0 auto; padding: 14mm 16mm 20mm;
+}
+h1.title { font-size: 15.5pt; font-weight: 700; text-align: center; margin: 0 0 8pt; line-height: 1.25; }
+.authors { text-align:center; font-size: 11pt; margin: 6pt 0 2pt; }
+.affil { text-align:center; font-size: 9pt; font-style: italic; color:#333; margin-bottom: 10pt; }
+.abstract, .idx { font-size: 9pt; text-align: justify; margin: 8pt 0; }
+.abstract p { margin: 0; }
+h2 { font-size: 11pt; font-weight: 700; text-align: center; margin: 13pt 0 7pt;
+     text-transform: uppercase; letter-spacing: 0.3pt; }
+h3 { font-size: 10.5pt; font-weight: 700; font-style: italic; margin: 9pt 0 4pt; text-align:left; }
+p { text-align: justify; margin: 0 0 6pt; }
+.cols { column-count: 2; column-gap: 7mm; }
+figure { margin: 8pt 0 10pt; break-inside: avoid; text-align: center; }
+figure img { max-width: 100%; height: auto; }
+figcaption { font-size: 8.5pt; text-align: justify; margin-top: 3pt; }
+table { border-collapse: collapse; width: 100%; margin: 6pt 0 8pt; font-size: 8pt; break-inside: avoid; }
+th, td { border: 1px solid #444; padding: 2.5pt 4pt; text-align: center; }
+th { background: #f3f3f3; font-weight: 700; }
+caption { caption-side: top; font-size: 9pt; font-weight: 700; text-align: center; margin: 6pt 0 3pt; }
+.eq { text-align:center; margin: 6pt 0; font-style: italic; }
+.eqno { float:right; font-style: normal; }
+ol.refs { font-size: 8.5pt; padding-left: 18pt; text-align: justify; }
+ol.refs li { margin-bottom: 4pt; }
+.note { font-size: 8.5pt; font-style: italic; }
+hr.sep { border:0; border-top: 1px solid #000; margin: 10pt 0; }
+.nom { font-size: 7.7pt; margin: 3pt 0 8pt; }
+.nom th, .nom td { text-align: left; padding: 1.5pt 4pt; }
+.nom td:first-child { white-space: nowrap; width: 28%; font-style: italic; }
+.nom-head { font-size: 9pt; font-weight: 700; font-style: italic; margin: 8pt 0 2pt; text-align: left; }
+</style>
+</head>
+<body>
+<h1 class="title">CVaR-Based Day-Ahead Energy and Deliverable-Reserve Bidding for a Virtual Power Plant: Evidence from SMARD DE-LU Data</h1>
+<p class="authors">Amir Hassanli and Ali Reza Abbasi</p>
+<p class="affil">IEEE Transactions style. Operating day 19 August 2026, bidding zone DE-LU. An industrial energy contract of 180 EUR/MWh is used only when reporting profit; it is exogenous and does not change the ranking of the bids.</p>
+
+<div class="abstract"><p><b>Abstract—</b>
+A virtual power plant (VPP) that sells day-ahead energy and reserve from PV, wind, a battery, and a small gas unit is exposed to joint forecast errors in price, load, and renewable output. We formulate a mean–CVaR linear program on a 24-hour horizon and settle frozen first-stage bids on German SMARD DE-LU data. Four bidding architectures are compared on the same physical plant: a deterministic expected-value energy bid (B0), a CVaR energy bid trained on independent error draws (B1), a CVaR energy bid trained on joint daily error blocks (B2), and a CVaR energy-plus-reserve bid that remains feasible for the battery state of charge in every retained scenario (P1). All four programs are linear and are solved to proven optimality by HiGHS. On 19 August 2026, P1 realises 11 487 EUR against 10 938 EUR for B0. The extra 549 EUR is, to within a few tens of euros, the 589 EUR of reserve capacity revenue. Breaking cross-variable dependence (B1 versus B2; P1 trained on independent errors versus P1) changes out-of-sample profit by less than 10 EUR/day. Energy-only CVaR does not beat B0 out of sample. A 14-day rolling test (6–19 August) reproduces the same ranking, with P1 ahead on every day. A myopic forecast-following heuristic realises 10 032 EUR; a perfect-foresight reserve bid realises 11 657 EUR, so P1 captures most of the hindsight reserve value. The Student-<i>t</i> copula fitted on the 2024–2025 design window has ν = 18.55 and is therefore close to Gaussian in the tail; that result, together with the B1/B2 comparison, is why we do not attribute the settlement gain to heavy joint tails. The seven-stage market chronology is written in the formulation; the SMARD experiment instantiates day-ahead (stage 1) and settlement (stages 6–7), because the public extract has no intraday order book.
+</p></div>
+<p class="idx"><b>Index Terms—</b> Virtual power plant, CVaR, day-ahead bidding, energy storage, reserve deliverability, scenario generation, out-of-sample validation, SMARD.</p>
+<hr class="sep"/>
+<div class="cols">
+
+<!-- injected blocks: nomenclature + sections IV-VI -->
+<section id="nomenclature">
+<h2>Nomenclature</h2>
+
+<p class="nom-head">Abbreviations</p>
+<table class="nom">
+<thead><tr><th>Abbreviation</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td>CVaR</td><td>Conditional Value-at-Risk</td></tr>
+<tr><td>DER</td><td>Distributed Energy Resource</td></tr>
+<tr><td>DG</td><td>Distributed Generation</td></tr>
+<tr><td>DR</td><td>Demand Response</td></tr>
+<tr><td>DRP</td><td>Demand Response Provider</td></tr>
+<tr><td>BESS</td><td>Battery Energy Storage System</td></tr>
+<tr><td>DA</td><td>Day-Ahead</td></tr>
+<tr><td>ID</td><td>Intraday</td></tr>
+<tr><td>RM</td><td>Reserve Market</td></tr>
+<tr><td>OOS</td><td>Out-of-Sample</td></tr>
+<tr><td>MILP</td><td>Mixed-Integer Linear Programming</td></tr>
+<tr><td>PV</td><td>Photovoltaic</td></tr>
+<tr><td>VPP</td><td>Virtual Power Plant</td></tr>
+<tr><td>WPP</td><td>Wind Power Plant</td></tr>
+<tr><td>PIT</td><td>Probability Integral Transformation</td></tr>
+<tr><td>ACF</td><td>Autocorrelation Function</td></tr>
+<tr><td>AIC</td><td>Akaike Information Criterion</td></tr>
+<tr><td>DRO</td><td>Distributionally Robust Optimization</td></tr>
+</tbody>
+</table>
+
+<p class="nom-head">Sets and Indices</p>
+<table class="nom">
+<thead><tr><th>Symbol</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><i>ω</i> ∈ Ω</td><td>Scenario index</td></tr>
+<tr><td><i>t</i> ∈ 𝒯</td><td>Time index (hourly resolution)</td></tr>
+<tr><td><i>s</i> ∈ 𝒮</td><td>Operational stage index, 𝒮 = {1, …, 7}</td></tr>
+<tr><td><i>g</i> ∈ 𝒢</td><td>Distributed generation unit index</td></tr>
+<tr><td><i>b</i> ∈ ℬ</td><td>Battery energy storage system index</td></tr>
+<tr><td><i>p</i> ∈ 𝒫</td><td>Photovoltaic unit index</td></tr>
+<tr><td><i>w</i> ∈ 𝒲</td><td>Wind power plant index</td></tr>
+<tr><td><i>d</i> ∈ 𝒟</td><td>Dispatch group index for surviving-reserve constraints</td></tr>
+<tr><td><i>j</i> ∈ 𝒥</td><td>Demand response group index</td></tr>
+</tbody>
+</table>
+
+<p class="nom-head">Parameters</p>
+<table class="nom">
+<thead><tr><th>Symbol</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><i>P</i><sub><i>j,t</i></sub><sup>DR</sup></td><td>Power usage of the <i>j</i>-th flexible demand group at time <i>t</i> (MW)</td></tr>
+<tr><td>η<sub><i>b</i></sub><sup>ch</sup>, η<sub><i>b</i></sub><sup>dch</sup></td><td>Charging and discharging efficiency of BESS <i>b</i></td></tr>
+<tr><td>λ<sub><i>t</i></sub><sup>DA</sup></td><td>Day-ahead market price at time <i>t</i> (EUR/MWh)</td></tr>
+<tr><td>λ<sub><i>t,ω</i></sub><sup>RT</sup></td><td>Real-time market price in scenario <i>ω</i> at time <i>t</i> (EUR/MWh)</td></tr>
+<tr><td>λ<sub><i>j,ω</i></sub><sup>DR</sup></td><td>Price offered to demand-response group <i>j</i> in scenario <i>ω</i> (EUR/MWh)</td></tr>
+<tr><td>λ<sub><i>j,t</i></sub><sup>DR</sup></td><td>Time-varying DR price for group <i>j</i> at time <i>t</i> (EUR/MWh)</td></tr>
+<tr><td>λ<sub><i>b,t</i></sub><sup>ESS</sup></td><td>Operational cost of BESS <i>b</i> at time <i>t</i> (EUR/MWh)</td></tr>
+<tr><td>α</td><td>Confidence level for CVaR (e.g., 0.95)</td></tr>
+<tr><td>λ, β</td><td>Risk-aversion coefficient (weight on CVaR in the objective)</td></tr>
+<tr><td>π<sub>ω</sub></td><td>Probability of scenario <i>ω</i></td></tr>
+<tr><td><i>C</i><sub><i>g,t</i></sub><sup>DG</sup></td><td>Marginal cost of DG unit <i>g</i> at time <i>t</i> (EUR/MWh)</td></tr>
+<tr><td><i>E</i><sub><i>b</i></sub><sup>min</sup>, <i>E</i><sub><i>b</i></sub><sup>max</sup></td><td>Minimum and maximum state-of-charge of BESS <i>b</i> (MWh)</td></tr>
+<tr><td><i>P</i><sub><i>b</i></sub><sup>ch,max</sup>, <i>P</i><sub><i>b</i></sub><sup>dch,max</sup></td><td>Maximum charging and discharging power of BESS <i>b</i> (MW)</td></tr>
+<tr><td><i>P</i><sub><i>w,t</i></sub><sup>W,avail</sup></td><td>Available wind power from plant <i>w</i> at time <i>t</i> (MW)</td></tr>
+<tr><td><i>P</i><sub><i>p,t</i></sub><sup>PV,avail</sup></td><td>Available PV power from unit <i>p</i> at time <i>t</i> (MW)</td></tr>
+<tr><td>DR<sub><i>j</i></sub><sup>max</sup></td><td>Maximum demand-response capacity of group <i>j</i> (MW)</td></tr>
+<tr><td><i>E</i><sup>DR,max</sup></td><td>Maximum cumulative DR energy over the response window (MWh)</td></tr>
+<tr><td><i>c</i><sub><i>t</i></sub><sup>DR</sup></td><td>Unit cost of demand-response activation at time <i>t</i> (EUR/MWh)</td></tr>
+<tr><td><i>P</i><sub><i>t</i></sub><sup>DA,comm</sup></td><td>Day-ahead committed power (MW)</td></tr>
+<tr><td><i>F</i><sup>avail</sup></td><td>Total available flexibility capacity (MW)</td></tr>
+<tr><td><i>F</i><sub><i>r</i></sub><sup>comm</sup></td><td>Flexibility committed at stage <i>r</i> (MW)</td></tr>
+<tr><td><i>F</i><sub><i>d,t,ω</i></sub><sup>surv</sup></td><td>Surviving flexible capacity in dispatch group <i>d</i> after loss of the largest resource in the group (SoC-feasible reserve) (MW)</td></tr>
+<tr><td><i>R</i><sub><i>d,t</i></sub><sup>comm</sup></td><td>Reserve commitment of dispatch group <i>d</i> at time <i>t</i> (MW)</td></tr>
+<tr><td><i>M</i></td><td>Big-<i>M</i> constant for logical constraints</td></tr>
+<tr><td><i>R</i></td><td>Correlation / dependence matrix of the Student-<i>t</i> copula</td></tr>
+<tr><td>ν</td><td>Degrees-of-freedom parameter of the Student-<i>t</i> copula</td></tr>
+</tbody>
+</table>
+
+<p class="nom-head">Decision Variables</p>
+<table class="nom">
+<thead><tr><th>Symbol</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><i>x</i><sub><i>s</i></sub></td><td>Decision vector at operational stage <i>s</i></td></tr>
+<tr><td><i>x</i><sub><i>s</i></sub><sup>∗</sup></td><td>Optimal decision at stage <i>s</i> (held fixed in later stages)</td></tr>
+<tr><td><i>P</i><sub><i>t,ω</i></sub><sup>PV</sup></td><td>Dispatched PV power in scenario <i>ω</i> at time <i>t</i> (MW)</td></tr>
+<tr><td><i>P</i><sub><i>t,ω</i></sub><sup>W</sup></td><td>Dispatched wind power in scenario <i>ω</i> at time <i>t</i> (MW)</td></tr>
+<tr><td><i>P</i><sub><i>t,ω</i></sub><sup>DG</sup></td><td>Dispatched DG power in scenario <i>ω</i> at time <i>t</i> (MW)</td></tr>
+<tr><td><i>P</i><sub><i>t,ω</i></sub><sup>ch</sup>, <i>P</i><sub><i>t,ω</i></sub><sup>dch</sup></td><td>Charging and discharging power of the BESS in scenario <i>ω</i> at time <i>t</i> (MW)</td></tr>
+<tr><td><i>E</i><sub><i>t,ω</i></sub></td><td>State of charge of the BESS in scenario <i>ω</i> at time <i>t</i> (MWh)</td></tr>
+<tr><td><i>P</i><sub><i>t,ω</i></sub><sup>grid</sup></td><td>Net grid exchange in scenario <i>ω</i> at time <i>t</i> (MW)</td></tr>
+<tr><td>DR<sub><i>t,ω</i></sub></td><td>Activated demand response in scenario <i>ω</i> at time <i>t</i> (MW)</td></tr>
+<tr><td><i>L</i><sub><i>t,ω</i></sub></td><td>Load in scenario <i>ω</i> at time <i>t</i> (MW)</td></tr>
+<tr><td><i>I</i><sub><i>t,ω</i></sub><sup>+</sup>, <i>I</i><sub><i>t,ω</i></sub><sup>−</sup></td><td>Positive and negative imbalance in scenario <i>ω</i> at time <i>t</i> (MW)</td></tr>
+<tr><td><i>z</i><sub><i>t,ω</i></sub></td><td>Binary variable that prevents simultaneous BESS charge and discharge</td></tr>
+<tr><td>Π<sub>ω</sub></td><td>Operating profit in scenario <i>ω</i> (EUR)</td></tr>
+<tr><td><i>L</i><sub>ω</sub></td><td>Loss in scenario <i>ω</i> (EUR), the negative of profit</td></tr>
+<tr><td>η</td><td>Auxiliary CVaR variable (VaR threshold)</td></tr>
+<tr><td>ξ<sub>ω</sub></td><td>Auxiliary CVaR excess-loss variable in scenario <i>ω</i> (EUR)</td></tr>
+<tr><td><i>R</i><sub>ω</sub><sup>DA</sup></td><td>Day-ahead market revenue in scenario <i>ω</i> (EUR)</td></tr>
+<tr><td><i>R</i><sub>ω</sub><sup>ID</sup></td><td>Intraday market revenue in scenario <i>ω</i> (EUR)</td></tr>
+<tr><td><i>R</i><sub>ω</sub><sup>RT</sup></td><td>Real-time market revenue in scenario <i>ω</i> (EUR)</td></tr>
+<tr><td><i>R</i><sub>ω</sub><sup>DR</sup></td><td>Demand-response revenue in scenario <i>ω</i> (EUR)</td></tr>
+<tr><td><i>R</i><sub>ω</sub><sup>RES</sup></td><td>Reserve-market revenue in scenario <i>ω</i> (EUR)</td></tr>
+<tr><td><i>C</i><sub>ω</sub><sup>DG</sup></td><td>Distributed-generation cost in scenario <i>ω</i> (EUR)</td></tr>
+<tr><td><i>C</i><sub>ω</sub><sup>BESS</sup></td><td>Battery operating cost in scenario <i>ω</i> (EUR)</td></tr>
+<tr><td><i>C</i><sub>ω</sub><sup>DR</sup></td><td>Demand-response activation cost in scenario <i>ω</i> (EUR)</td></tr>
+<tr><td><i>C</i><sub>ω</sub><sup>imb</sup></td><td>Imbalance settlement cost in scenario <i>ω</i> (EUR)</td></tr>
+<tr><td><i>F</i><sub><i>s</i></sub><sup>rem</sup></td><td>Remaining flexibility after stage <i>s</i> (MW)</td></tr>
+<tr><td><i>e</i><sub><i>t</i></sub><sup><i>x</i></sup></td><td>Forecast error for variable <i>x</i> at time <i>t</i></td></tr>
+<tr><td>ẽ<sub><i>t</i></sub><sup><i>x</i></sup></td><td>Calibrated forecast error for variable <i>x</i> at time <i>t</i></td></tr>
+<tr><td><i>u</i><sub><i>t</i></sub><sup><i>x</i></sup></td><td>Probability integral transform (PIT) of variable <i>x</i> at time <i>t</i></td></tr>
+<tr><td><i>z</i><sub>ω,<i>t</i></sub></td><td>Latent vector from the Student-<i>t</i> copula in scenario <i>ω</i> at time <i>t</i></td></tr>
+<tr><td><i>e</i><sub>ω,<i>t</i></sub><sup><i>x</i></sup></td><td>Generated forecast-error scenario for variable <i>x</i></td></tr>
+<tr><td><i>x</i><sub>ω,<i>t</i></sub></td><td>Generated physical scenario for variable <i>x</i></td></tr>
+<tr><td>ρ<sub><i>x</i></sub>(ℓ)</td><td>Autocorrelation of error process <i>x</i> at lag ℓ</td></tr>
+</tbody>
+</table>
+
+<p class="nom-head">Operational Stage Definitions</p>
+<table class="nom">
+<thead><tr><th>Stage</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><i>s</i> = 1</td><td>Day-ahead (DA) bid submission</td></tr>
+<tr><td><i>s</i> = 2</td><td>Intraday (ID) adjustment 1</td></tr>
+<tr><td><i>s</i> = 3</td><td>Intraday (ID) adjustment 2</td></tr>
+<tr><td><i>s</i> = 4</td><td>Real-time (RT) pre-dispatch</td></tr>
+<tr><td><i>s</i> = 5</td><td>Balancing-market activation</td></tr>
+<tr><td><i>s</i> = 6</td><td>Final settlement</td></tr>
+<tr><td><i>s</i> = 7</td><td>Post-event evaluation / OOS reconciliation</td></tr>
+</tbody>
+</table>
+</section>
+
+
+<h2>I. Introduction</h2>
+<p>A VPP can offer PV, wind, a battery, and a small dispatchable unit as one portfolio. The same aggregation piles forecast error, imbalance cost, and the risk that a reserved megawatt is not sitting in the battery when it is called. Stochastic programs, robust models, CVaR bids, and DRO have all been used for this setting [1]–[8].</p>
+<p>Two modelling choices then get mixed up. One is how joint forecast errors are drawn. The other is which products the VPP is allowed to sell. A CVaR energy bid trained on a rich copula can still lose money if the only product is energy. A simple expected-value bid can look weak only because it was not allowed to sell reserve. We keep those two choices separate.</p>
+<p>The programs compared below are linear. Binaries that forbid simultaneous charge and discharge appear in the algebra, (25)–(26), but they are redundant once efficiency is below one and throughput is penalised, so the numerical study is an LP, not a MILP. HiGHS returns status kOptimal in every case we report.</p>
+<p>Contributions, stated as what was actually run:</p>
+<p>1) A mean–CVaR LP for day-ahead energy, and a second LP that also sells SoC-feasible reserve.</p>
+<p>2) An isolation test: joint daily error blocks versus independent draws of the same marginals (B1 versus B2; P1 versus P1 trained on independent errors).</p>
+<p>3) Frozen-bid settlement on SMARD DE-LU, a 14-day rolling window, a forecast-following heuristic, and a perfect-foresight bound.</p>
+<p>4) An open-source, auditable solve (HiGHS, CC BY 4.0 data).</p>
+<p>Section II places the work. Section III describes the plant. Section IV is the uncertainty pipeline. Section V is the LP. Section VI is the experiment. Section VII reports numbers. Section VIII discusses what moved settlement. Section IX lists limits. Section X closes.</p>
+
+<h2>II. Related Work</h2>
+<p>Day-ahead VPP bids are usually two-stage: a here-and-now DA position and a recourse that sees the whole scenario [3], [8]–[12]. CVaR is the usual tail measure because it linearises [6], [9], [14]. DRO hedges ambiguity in the distribution [13], [21]. Copula scenarios for wind errors exist but often default to Gaussian or independent draws [18]. Conformal price intervals have been tested as forecasts, not as VPP bids [19], [20]. Reserve is frequently sized from nameplate capacity rather than from energy that the battery still holds.</p>
+<p>Table I is a four-column map. It does not claim that no paper has ever sold reserve. It claims that a CVaR energy–reserve LP, settled on SMARD with an independence ablation, is still worth reporting because that ablation is rarely shown.</p>
+
+<table>
+<caption>TABLE I<br/>COMPACT PLACEMENT AGAINST RECENT VPP BIDS</caption>
+<thead><tr><th>Study</th><th>Uncertainty</th><th>Risk</th><th>Reserve / data</th></tr></thead>
+<tbody>
+<tr><td>Mujeeb et al. [8]</td><td>Two-stage SP, independent</td><td>CVaR</td><td>Energy+FRR / —</td></tr>
+<tr><td>Fan and Liu [13]</td><td>Wasserstein DRO</td><td>Chance/DRO</td><td>— / —</td></tr>
+<tr><td>Wang et al. [18]</td><td>Conditional GMM</td><td>Forecast</td><td>— / wind</td></tr>
+<tr><td>O’Connor et al. [19]</td><td>Conformal intervals</td><td>Forecast</td><td>— / DA–BM prices</td></tr>
+<tr><td>Nemati et al. [1]</td><td>Flexible robust</td><td>Robust</td><td>Seq. markets</td></tr>
+<tr><td>Vahedipour-Dahraie [3]</td><td>Stochastic program</td><td>CVaR</td><td>Energy+reserve</td></tr>
+<tr><td><b>This work</b></td><td>Joint blocks vs independent</td><td>Linear CVaR</td><td>SoC-feasible / SMARD OOS</td></tr>
+</tbody>
+</table>
+<p>Table I is qualitative on purpose. Quantitative claims are reserved for Tables III–VI, which come from recorded solves.</p>
+
+<h2>III. Plant and Assumptions</h2>
+<p>The VPP is a price-taker: 5 MW-class industrial load, 4 MW PV, 2 MW wind, a 2.5 MW / 5 MWh battery (η = 0.95, SoC 10–90%, cyclic), and 1.8 MW of DG at 68 EUR/MWh. Degradation is 1.5 EUR/MWh of throughput. Default risk weights are λ = 0.05 and α = 0.95, with K = 50 equiprobable scenarios. Imbalance is a two-price proxy (short at a premium to DA, long at a discount), not the German reBAP series. Reserve capacity prices are shaped from the DA forecast (base 9.0 / 6.5 EUR/MW/h); they are not cleared FCR or aFRR auctions. Demand response appears in the algebra and in the nomenclature; it is not an observed SMARD activation series and is not used in the numerical study.</p>
+<table>
+<caption>TABLE II<br/>PLANT RATINGS USED IN EVERY SOLVE</caption>
+<thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>BESS power / energy</td><td>2.50 MW / 5.00 MWh</td></tr>
+<tr><td>PV / wind</td><td>4.00 / 2.00 MW</td></tr>
+<tr><td>DG rating / cost</td><td>1.80 MW / 68 EUR/MWh</td></tr>
+<tr><td>λ / α / K</td><td>0.05 / 0.95 / 50</td></tr>
+<tr><td>Solver</td><td>HiGHS LP (SciPy linprog)</td></tr>
+</tbody>
+</table>
+<p>Table II is held fixed except in the λ, α, and K grids of Section VII. Changing a row would change every later table.</p>
+
+<h2>IV. Data and Uncertainty</h2>
+<p>SMARD DE-LU series (Bundesnetzagentur, CC BY 4.0, via Energy-Charts) supply 15-min prices, load, solar, wind, and day-ahead forecasts, resampled to hourly means. Two windows must not be confused. The copula and ACF diagnostics were fitted on a 1 January 2024 – 30 September 2025 design window. The settlement study uses the extract that was live at runtime: 1 June – 21 August 2026, operating day 19 August 2026, rolling test 6–19 August. National MW are scaled to the ratings in Table II.</p>
+<p>Forecast errors are e<sub>t</sub><sup>x</sup> = x<sub>t</sub><sup>act</sup> − x<sub>t</sub><sup>fc</sup> for x ∈ {price, load, PV, wind}. Load is bias-corrected before scenarios are drawn. Joint scenarios are daily block bootstrap: a whole historical error day is added to the operating-day point forecast. Independent scenarios (B1, P1-ind) draw a different historical day for each of the four series, so marginals are kept and cross-variable dependence is destroyed.</p>
+<p>A Student-<i>t</i> copula was fitted on the design window: ν = 18.5515, AIC −670.74 against −429.90 for Gaussian, OOS log-likelihood 12.99 against −30.71, pooled ACF MAE 0.00395. ν ≈ 18 is not a heavy-tailed copula. It is close to Gaussian in the joint tail. We therefore treat the copula as a calibration check, not as the reason P1 makes money. The numerical bids below use the block bootstrap, which keeps intra-day autocorrelation without claiming a copula sampling engine inside the solver loop.</p>
+<figure id="fig1">
+<img src="figures/Fig01_Forecast_vs_Actual.png" alt="Fig. 1"/>
+<figcaption><b>Fig. 1.</b> Forecast versus realized SMARD series on 19 August 2026: DA price, VPP load, PV, and wind.</figcaption>
+</figure>
+<p>Fig. 1 is the operating day. Price is a high weekday (about 130–210 EUR/MWh). PV is well forecast. Wind is the noisy series. These four panels are the information the bid may use (solid forecast) and the path settlement will use (dashed realized).</p>
+<figure id="fig2">
+<img src="figures/Fig06_Scenario_Fan.png" alt="Fig. 2"/>
+<figcaption><b>Fig. 2.</b> Joint daily-block scenario fans, K = 50, with P10–P90, the point forecast, and the realized path.</figcaption>
+</figure>
+<p>Fig. 2 is the joint object the LP hedges. Realized price, load, and PV stay inside the fan; wind undershoots the afternoon forecast.</p>
+<figure id="fig3">
+<img src="figures/Fig08_Error_KDE.png" alt="Fig. 3"/>
+<figcaption><b>Fig. 3.</b> Kernel densities of day-ahead forecast errors, 58 historical days.</figcaption>
+</figure>
+<p>Fig. 3 shows why a thin-tailed price model is unattractive even if the copula itself is not heavy: price-error kurtosis is 15.8. Load is almost symmetric. That is a statement about marginals, not about tail dependence.</p>
+
+<h2>V. Linear Program</h2>
+<p>First-stage decisions are the DA energy position p<sub>t</sub><sup>DA</sup> and, in P1, upward and downward reserve. Recourse in scenario ω is charge, discharge, SoC, DG, and two-price imbalance. The objective is</p>
+<p class="eq">max (1−λ) E[Π<sub>ω</sub>] + λ CVaR<sub>α</sub>(Π<sub>ω</sub>), <span class="eqno">(1)</span></p>
+<p>with the Rockafellar–Uryasev linearisation [6], [14]. Power balance, cyclic SoC, and DG ramps are imposed in every scenario. P1 additionally requires that reserved power remain feasible for SoC and DG headroom in every ω,</p>
+<p class="eq">p<sub>t,ω</sub><sup>dis</sup> + p<sub>t,ω</sub><sup>DG</sup> + r<sub>t</sub><sup>↑</sup> ≤ P<sup>batt</sup> + P<sup>DG</sup>, &nbsp; E<sub>t,ω</sub> − r<sub>t</sub><sup>↑</sup>/η<sup>dis</sup> ≥ E<sup>min</sup>. <span class="eqno">(2)</span></p>
+<p>We call (2) SoC-feasible reserve, not N−1 in the asset-outage sense. It is a robust energy check across scenarios, not a contingency list.</p>
+<p>German markets open in sequence (DA, two ID auctions, continuous ID, RT, balancing, settlement). The algebra therefore has seven stages and a leftover-flexibility recursion so that the same megawatt is not sold twice. A textbook two-stage SP is the special case that merges stages 2–5. Public SMARD has no ID order book, so the experiment instantiates stage 1 (DA energy and, in P1, reserve) and stages 6–7 (frozen-bid settlement). Stages 2–5 are not filled with invented ID prices. The reported numbers are a DA-plus-settlement slice of a seven-stage layout, not a claim that we cleared a synthetic intraday market.</p>
+<p>B0 is (1) with K = 1 (the mean scenario), λ = 0, and no reserve. B1 is (1) with independent error draws and no reserve. B2 is (1) with joint daily blocks and no reserve. P1 is (1)–(2) with joint blocks. P1-ind is (1)–(2) with independent draws. H0 sets p<sup>DA</sup> = PV<sup>fc</sup> + wind<sup>fc</sup> − load<sup>fc</sup> and then solves only recourse. Perfect foresight solves the same LPs on the realized path as if it had been known at gate closure.</p>
+
+<h2>VI. Experiment</h2>
+<p>Workflow: SMARD → hourly VPP panel → joint or independent error days → HiGHS LP → freeze first-stage → recourse on the joint scenario set (common measure) and on the realized day. Sensitivity: λ ∈ {0, 0.01, 0.02, 0.05, 0.1, 0.2}, α ∈ {0.90, 0.95, 0.99}, K ∈ {30, 50, 100} on P1, 54 solves, all kOptimal. Rolling OOS: 14 consecutive complete days ending 19 August 2026. Paired tests use daily OOS profits (n = 14) as the primitive that matters for a bid; in-sample scenario tests (n = 50) share one first-stage and are not independent draws, so we do not lean on their 10<sup>−40</sup> p-values. Six paired comparisons are reported; we treat p &lt; 0.01/6 as a rough Bonferroni check rather than a formal family-wise proof.</p>
+
+<h2>VII. Results</h2>
+<p>Table III is the isolation table. Every energy-only CVaR bid (B1, B2) lands within 35 EUR/day of B0 out of sample. Every reserve bid (P1, P1-ind) lands about 550 EUR/day above B0. Training P1 on independent errors instead of joint blocks changes OOS profit by +6 EUR. Training the energy CVaR on independent errors (B1) instead of joint blocks (B2) changes OOS profit by +7 EUR. Dependence, on this summer week, is not the lever. Reserve is.</p>
+<table>
+<caption>TABLE III<br/>ISOLATION ON 19 AUGUST 2026 (EUR / DAY, HIGHS kOptimal EXCEPT H0)</caption>
+<thead><tr><th>Model</th><th>Errors</th><th>Reserve</th><th>E[profit]</th><th>CVaR<sub>0.95</sub></th><th>Realized</th></tr></thead>
+<tbody>
+<tr><td>H0 heuristic</td><td>point forecast</td><td>no</td><td>10 677</td><td>9 010</td><td>10 032</td></tr>
+<tr><td>B0 EV</td><td>mean</td><td>no</td><td>11 498</td><td>9 986</td><td>10 938</td></tr>
+<tr><td>B1 CVaR</td><td>independent</td><td>no</td><td>11 505</td><td>10 014</td><td>10 971</td></tr>
+<tr><td>B2 CVaR</td><td>joint blocks</td><td>no</td><td>11 508</td><td>10 027</td><td>10 965</td></tr>
+<tr><td>P1-ind CVaR</td><td>independent</td><td>yes</td><td>11 986</td><td>10 407</td><td>11 493</td></tr>
+<tr><td>P1 CVaR</td><td>joint blocks</td><td>yes</td><td>11 992</td><td>10 440</td><td>11 487</td></tr>
+<tr><td>PF energy</td><td>actuals</td><td>no</td><td>—</td><td>—</td><td>11 055</td></tr>
+<tr><td>PF reserve</td><td>actuals</td><td>yes</td><td>—</td><td>—</td><td>11 657</td></tr>
+</tbody>
+</table>
+<p>Table III also bounds ambition. The heuristic H0 is 906 EUR behind B0: even a mean-value LP is doing useful work relative to “bid the forecast.” Perfect-foresight energy is only 117 EUR above realized B0, so energy timing on this day is almost already captured. Perfect-foresight reserve is 11 657 EUR; P1 at 11 487 EUR takes most of that hindsight reserve value and leaves 170 EUR on the table.</p>
+<figure id="fig4">
+<img src="figures/Fig03_Profit_Comparison.png" alt="Fig. 4"/>
+<figcaption><b>Fig. 4.</b> Dumbbell of in-sample expectation versus realized settlement (left) and gap versus B0 (right). Whiskers are the in-sample scenario standard deviation.</figcaption>
+</figure>
+<p>Fig. 4 is a picture of the B0/B2/P1 rows of Table III. The dumbbell for P1 sits to the right; B2 covers B0. Numeric labels match the table, so the figure is not a second data set.</p>
+<figure id="fig5">
+<img src="figures/Fig04_CVaR_Comparison.png" alt="Fig. 5"/>
+<figcaption><b>Fig. 5.</b> Slope from E[profit] to CVaR at α = 0.95 (left) and the tail gap E − CVaR (right).</figcaption>
+</figure>
+<p>Fig. 5 is the tail companion. P1 starts higher and drops by about the same 1 550 EUR as B0, so the whole profit law has been shifted. B0 and B2 slopes coincide.</p>
+<figure id="fig6">
+<img src="figures/Fig11_ECDF_Profit.png" alt="Fig. 6"/>
+<figcaption><b>Fig. 6.</b> Empirical CDF of K = 50 joint-scenario profits for B0, B2, and P1.</figcaption>
+</figure>
+<p>Fig. 6 is stochastic dominance on the training scenarios. P1 lies to the right of B0 and B2. B0 and B2 cross. That is why we do not advertise energy-only CVaR as a tail engine on this plant.</p>
+<figure id="fig7">
+<img src="figures/Fig22_DA_Energy_Bids.png" alt="Fig. 7"/>
+<figcaption><b>Fig. 7.</b> First-stage DA energy position (sell positive) and the realized DE-LU price.</figcaption>
+</figure>
+<p>Fig. 7 shows all three plotted models as net buyers (−24 to −26 MWh). P1 is not winning an energy contest; it is leaving headroom for Fig. 9.</p>
+<figure id="fig8">
+<img src="figures/Fig13_Battery_SoC.png" alt="Fig. 8"/>
+<figcaption><b>Fig. 8.</b> Battery SoC. Shaded bands are in-sample P10–P90; dashes are realized recourse. The legend sits in the unused midday pocket.</figcaption>
+</figure>
+<p>Fig. 8 is the physical signature of the reserve offer. B0 and B2 empty the stack to 10% overnight. P1 holds about 2.2 MWh, which is the energy needed to back upward reserve for an hour at the 1.5 MW cap after efficiency.</p>
+<figure id="fig9">
+<img src="figures/Fig15_Reserve_Schedule.png" alt="Fig. 9"/>
+<figcaption><b>Fig. 9.</b> P1 reserve, up positive and down negative. B0 and B2 sell none; that note is placed in the empty 08–10 window.</figcaption>
+</figure>
+<p>Fig. 9 is the product that Table IV attributes the money to: 26.6 MW·h up and 28.2 MW·h down, 589 EUR of capacity revenue. The empty 08–10 window is where the legend sits.</p>
+<table>
+<caption>TABLE IV<br/>SETTLEMENT DECOMPOSITION ON 19 AUGUST 2026 (EUR)</caption>
+<thead><tr><th>Component</th><th>B0</th><th>B2</th><th>P1</th></tr></thead>
+<tbody>
+<tr><td>Load-service (exogenous)</td><td>18 024</td><td>18 024</td><td>18 024</td></tr>
+<tr><td>DA energy</td><td>−3 895</td><td>−4 255</td><td>−4 343</td></tr>
+<tr><td>Reserve capacity</td><td>0</td><td>0</td><td>589</td></tr>
+<tr><td>Imbalance</td><td>−223</td><td>163</td><td>175</td></tr>
+<tr><td>DG fuel</td><td>2 938</td><td>2 938</td><td>2 938</td></tr>
+<tr><td>Battery degradation</td><td>30</td><td>30</td><td>20</td></tr>
+<tr><td>Net</td><td>10 938</td><td>10 965</td><td>11 487</td></tr>
+</tbody>
+</table>
+<p>Table IV splits the euro amount. Load-service is common. The P1–B0 gap is 589 EUR of reserve, a better imbalance account, and 10 EUR less cycling, minus a slightly more expensive DA energy position.</p>
+<table>
+<caption>TABLE V<br/>HIGHS SIZE AND TIME ON 19 AUGUST 2026</caption>
+<thead><tr><th>Model</th><th>K</th><th>Vars / ineq.</th><th>Status</th><th>Time (s)</th></tr></thead>
+<tbody>
+<tr><td>B0</td><td>1</td><td>216 / 46</td><td>kOptimal</td><td>0.011</td></tr>
+<tr><td>B2</td><td>50</td><td>7 323 / 2 350</td><td>kOptimal</td><td>0.173</td></tr>
+<tr><td>P1</td><td>50</td><td>7 323 / 7 150</td><td>kOptimal</td><td>0.303</td></tr>
+</tbody>
+</table>
+<p>Table V is the live solve. P1 adds reserve inequalities, not extra variables. MIP gap is zero because these are LPs. At K = 100, P1 still solves in 1.6 s.</p>
+<table>
+<caption>TABLE VI<br/>ROLLING OOS, 6–19 AUGUST 2026 (EUR / DAY)</caption>
+<thead><tr><th>Model</th><th>Mean</th><th>Std</th><th>Min</th><th>Max</th></tr></thead>
+<tbody>
+<tr><td>B0</td><td>11 639</td><td>1 589</td><td>8 557</td><td>14 056</td></tr>
+<tr><td>B2</td><td>11 633</td><td>1 582</td><td>8 576</td><td>14 070</td></tr>
+<tr><td>P1</td><td>12 203</td><td>1 570</td><td>9 204</td><td>14 701</td></tr>
+</tbody>
+</table>
+<figure id="fig10">
+<img src="figures/Fig20_Rolling_OOS.png" alt="Fig. 10"/>
+<figcaption><b>Fig. 10.</b> Rolling-origin realized daily profit, 6–19 August 2026.</figcaption>
+</figure>
+<p>Fig. 10 and Table VI are the decision-level test. Mean OOS profit is 11 639 (B0), 11 633 (B2), and 12 203 (P1). P1 is above the other two on every one of the 14 days. Paired P1−B0: mean +563 EUR, t = 35, Wilcoxon p = 1.2×10<sup>−4</sup>, d = 9.4, bootstrap 95% CI [533, 593]. B2−B0: −7 EUR, p = 0.33, CI includes zero. With six comparisons, the P1 results still clear a Bonferroni 0.01/6 line; B2 does not. In-sample scenario tests give the same ranking but share one first-stage, so we do not quote their 10<sup>−40</sup> p-values as evidence of a new distribution.</p>
+<p>On P1, raising λ from 0 to 0.20 lifts CVaR by about 113 EUR and cuts expected profit by 14 EUR. Realized profit on 19 August is highest near λ = 0.05. Realized profit moves by less than 9 EUR/day between K = 30 and K = 100. Those grids are omitted as extra figures; the CSVs sit with the code.</p>
+
+<h2>VIII. Discussion</h2>
+<p>The isolation in Table III is the result. A deliverable reserve product, forced to respect SoC in every scenario, is worth about 550 EUR on this Wednesday and about 560 EUR/day over two weeks. A CVaR energy bid, whether the errors are joint or independent, is not worth a statistically detectable amount out of sample. A Student-<i>t</i> copula with ν = 18.55 was never likely to be the reason, and the B1/B2 pair confirms that.</p>
+<p>That does not make joint errors irrelevant in winter, or in a week of negative prices, or for a VPP that cannot sell reserve. It does mean that, on this SMARD slice, selling a megawatt that the battery can actually hold beats refining the copula of the energy position.</p>
+<p>Reserve prices here are shaped from DA, not taken from FCR/aFRR capacity auctions. If real capacity prices were near zero, P1’s advantage would shrink toward the 10 EUR cycling saving. If they were higher, the advantage would grow. The perfect-foresight reserve bound of 11 657 EUR is the ceiling under this price proxy, not under the German auction.</p>
+
+<h2>IX. Limitations</h2>
+<p>1) Fourteen summer days and one highlighted Wednesday. Winter and negative-price days are not in the rolling window.</p>
+<p>2) National SMARD series are scaled to a fictional 5 MW plant. This is not a metered VPP.</p>
+<p>3) Reserve prices and two-price imbalance are proxies, not reBAP or aFRR.</p>
+<p>4) Stages 2–5 of the seven-stage layout have no ID data in this extract.</p>
+<p>5) DR is in the algebra, not in the experiment.</p>
+<p>6) SoC-feasible reserve is not an asset-outage N−1 study.</p>
+<p>7) The copula ν = 18.55 is close to Gaussian; the settlement study uses block bootstrap, not a Student-<i>t</i> sampler inside the LP.</p>
+<p>8) In-sample scenario tests are dependent. We rely on the 14 daily OOS pairs.</p>
+
+<h2>X. Conclusion</h2>
+<p>A mean–CVaR LP that sells day-ahead energy and SoC-feasible reserve, solved with HiGHS and settled on SMARD DE-LU, realises 11 487 EUR on 19 August 2026 against 10 938 EUR for a deterministic energy bid. Over 14 rolling days the mean gap is 563 EUR/day and does not change sign. Independent-error twins of the same LPs finish within 10 EUR/day of the joint-error versions. Energy-only CVaR does not beat expected value out of sample. The money is the reserve product, checked against battery energy in every scenario, not the copula. That is a narrower claim than the title of an earlier draft, and it is the claim the numbers support.</p>
+
+<h2>Acknowledgment</h2>
+<p>Prices and public-power series © Bundesnetzagentur | SMARD.de, via Energy-Charts, CC BY 4.0. Programs solved with HiGHS.</p>
+
+<h2>References</h2>
+<ol class="refs">
+<li>H. Nemati, P. Sánchez-Martín, Á. Ortega, L. Sigrist, E. Lobato, and L. Rouco, “Flexible robust optimal bidding of renewable virtual power plants in sequential markets under asymmetric uncertainties,” <i>Sustainable Energy, Grids and Networks</i>, vol. 43, Art. no. 101801, 2025, doi: 10.1016/j.segan.2025.101801.</li>
+<li>Y. Lu, J. Zhang, B. Lu, and Z. Tan, “A two-stage cooperative scheduling model for virtual power plants accounting for price stochastic perturbations,” <i>Energies</i>, vol. 18, no. 17, p. 4586, 2025.</li>
+<li>M. Vahedipour-Dahraie, H. Rashidizadeh-Kermani, M. Shafie-Khah, and J. P. S. Catalão, “Risk-averse optimal energy and reserve scheduling for virtual power plants incorporating demand response programs,” <i>IEEE Trans. Smart Grid</i>, vol. 12, no. 2, pp. 1405–1415, 2021.</li>
+<li>Y. Zhang <i>et al.</i>, “A distributionally robust optimization approach for virtual power plant scheduling under uncertainty,” <i>Appl. Energy</i>, 2023.</li>
+<li>Z. Siqin <i>et al.</i>, “Two-stage distributionally robust bidding strategies for multi-energy virtual power plants in energy, reserve and carbon markets,” <i>Energy</i>, vol. 334, Art. no. 137455, 2025.</li>
+<li>D. Xiao <i>et al.</i>, “CVaR-constrained stochastic bidding strategy for a virtual power plant with mobile energy storages,” in <i>Proc. IEEE ISGT Europe</i>, 2020.</li>
+<li>Z. Wang <i>et al.</i>, “Stochastic bidding for VPPs enabled ancillary services: A case study,” <i>Appl. Energy</i>, vol. 352, 2023.</li>
+<li>A. Mujeeb <i>et al.</i>, “Optimizing virtual power plant operations in energy and frequency regulation reserve markets,” <i>Int. Trans. Electr. Energy Syst.</i>, 2025.</li>
+<li>D. Xiao, “A review on risk-averse bidding strategies for virtual power plants with uncertainties,” <i>Technologies</i>, vol. 13, no. 11, Art. no. 488, 2025, doi: 10.3390/technologies13110488.</li>
+<li>H. Du, J. Hu, Y. Fang, and D. Xie, “Optimal bidding strategy for virtual power plant participating in joint energy and reserve market considering physical–economic feasible operation region,” <i>Energy</i>, vol. 336, Art. no. 138410, 2025, doi: 10.1016/j.energy.2025.138410.</li>
+<li>W. Chang and Q. Yang, “Game-theoretic risk-averse day-ahead optimal bidding strategy of virtual power plant,” <i>Energy</i>, 2025.</li>
+<li>Y. Jiang, J. Dong, and H. Huang, “Optimal bidding strategy for the price-maker virtual power plant in the day-ahead market based on MADDPG,” <i>Energy</i>, vol. 306, 2024.</li>
+<li>Q. Fan and D. Liu, “A Wasserstein-distance-based distributionally robust chance-constrained bidding model for virtual power plant considering electricity–carbon trading,” <i>IET Renew. Power Gener.</i>, vol. 18, no. 3, 2024, doi: 10.1049/rpg2.12806.</li>
+<li>J. C. Do Prado and U. Chikezie, “A decision model for an electricity retailer with energy storage and virtual bidding under daily and hourly CVaR assessment,” <i>IEEE Access</i>, vol. 9, pp. 106181–106191, 2021.</li>
+<li>Z. Tan, Q. Tan, and Y. Wang, “Bidding strategy of virtual power plant with energy storage power station and photovoltaic and wind power,” <i>J. Eng.</i>, Art. no. 6139086, 2018.</li>
+<li>Z. Wang, J. Gao, R. Zhao, J. Wang, and G. Li, “Optimal bidding strategy for virtual power plants considering the feasible region of vehicle-to-grid,” <i>Energy Convers. Econ.</i>, vol. 1, no. 3, pp. 238–250, 2020.</li>
+<li>J. Yoo and J. Kim, “A risk-aware bi-level bidding strategy for virtual power plant with power-to-hydrogen system,” arXiv:2503.05366, 2025.</li>
+<li>Z. Wang, C. Shen, and F. Liu, “A conditional model of wind power forecast errors and its application in scenario generation,” <i>Appl. Energy</i>, vol. 212, pp. 771–785, 2018, doi: 10.1016/j.apenergy.2017.12.039.</li>
+<li>C. O’Connor, M. Bahloul, R. Rossi, S. Prestwich, and A. Visentin, “Conformal prediction for electricity price forecasting in the day-ahead and real-time balancing market,” <i>Energy and AI</i>, vol. 21, Art. no. 100571, 2025, doi: 10.1016/j.egyai.2025.100571.</li>
+<li>C. O’Connor, S. Prestwich, and A. Visentin, “Conformal prediction techniques for electricity price forecasting,” in <i>AALTD 2024</i>, LNCS 15433, Springer, 2025, pp. 1–17.</li>
+<li>R. Gao and A. J. Kleywegt, “Distributionally robust stochastic optimization with Wasserstein distance,” <i>Math. Oper. Res.</i>, vol. 48, no. 2, pp. 603–655, 2023, doi: 10.1287/moor.2022.1275.</li>
+<li>H. Heitsch and W. Römisch, “Scenario reduction algorithms in stochastic programming,” <i>Comput. Optim. Appl.</i>, vol. 24, pp. 187–206, 2003.</li>
+<li>ARPA-E, “PERFORM: Performance-based energy resource optimization and management,” U.S. DOE, 2024. [Online]. Available: https://arpa-e.energy.gov/technologies/programs/perform</li>
+</ol>
+<p class="note">Checked against publisher records for this revision: [1], [3], [9], [10], [13], [18], [19], [21]. Preprint [17] is labelled as such. Unverifiable article numbers from earlier drafts were dropped.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+{
+  "input_file": "SMARD_data_2021_2026.csv",
+  "rows": 49655,
+  "start_utc": "2020-12-31 23:00:00+00:00",
+  "end_utc": "2026-08-31 21:00:00+00:00",
+  "days_solved": 2069,
+  "days_failed": 0,
+  "negative_price_hours": 1963,
+  "deep_negative_hours_le_minus50": 118,
+  "negative_price_days": 351,
+  "deep_negative_days": 37,
+  "simultaneous_charge_discharge_days_throughput": 0,
+  "simultaneous_charge_discharge_days_xu": 0,
+  "simultaneous_charge_discharge_days_relcca": 0,
+  "interpretation": "Ex-post perfect-foresight battery-only diagnostic using realized day-ahead prices; not a forecast, not a reserve bid, not realized VPP profit.",
+  "assumptions": {
+    "power_MW": 2.5,
+    "energy_MWh": 5.0,
+    "soc_min_MWh": 0.5,
+    "soc_max_MWh": 4.5,
+    "eta_charge": 0.95,
+    "eta_discharge": 0.95,
+    "throughput_cost_EUR_per_MWh": 1.5,
+    "ReLCCA_kappa_EUR_per_MWh_hour": [
+      0.247,
+      0.247,
+      0.493,
+      0.493,
+      0.493,
+      0.822,
+      0.822,
+      0.822
+    ],
+    "Xu_segment_widths": [
+      0.2,
+      0.3,
+      0.3,
+      0.2
+    ],
+    "Xu_slopes_EUR_per_depth": [
+      10.0,
+      40.0,
+      80.0,
+      120.0
+    ],
+    "charge_discharge_exclusivity": "binary MILP"
+  }
+}

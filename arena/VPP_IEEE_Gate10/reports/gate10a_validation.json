@@ -1,0 +1,37 @@
+{
+  "gate": "10A.1",
+  "status": "PASS",
+  "study_period": {
+    "start": "2024-01-01",
+    "end": "2025-09-30"
+  },
+  "row_count_check": true,
+  "duplicate_check": true,
+  "max_missing_rate": 0.0,
+  "negative_physical": {
+    "load_actual": 0,
+    "wind_on_actual": 0,
+    "wind_off_actual": 0,
+    "pv_actual": 0
+  },
+  "negative_price_count": 982,
+  "price_stats": {
+    "rows": 15335,
+    "missing_rate": 0.0,
+    "negative_prices": 982,
+    "min": -250.32,
+    "max": 936.28,
+    "mean": 82.57792826866645,
+    "std": 53.657680270707395
+  },
+  "residual_load_check": {
+    "mean_error": -8.640365176564013e-06,
+    "median_error": 0.0,
+    "mae": 0.0007220410826333893,
+    "max_abs_error": 0.020000000002255547
+  },
+  "residual_load_check_pass": true,
+  "leakage_check": "PENDING",
+  "physical_master": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\processed\\master_physical_15min.csv",
+  "price_master": "C:\\Users\\Mahboobian\\Desktop\\مقاله 4\\VPP_IEEE_Gate10\\data\\processed\\master_da_price_hourly.csv"
+}
