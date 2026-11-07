@@ -1,45 +1,42 @@
-# agingbid_review
+# Reconstruction model: `agingbid`
 
-Reviewer-facing reconstruction of the daily mean–CVaR energy–reserve model with three aging laws
-(throughput, daily DoD, and ReLCCA). The original manuscript implementation was not supplied, so this
-package is not an exact reproduction of the published runs. Code-only assumptions are identified in
-`agingbid/core.py` and `../data/parameters/battery_model.json`.
+This directory is the execution entry point for the independent reconstruction. The original manuscript implementation was not supplied; this package uses SciPy's LP/MILP interface with the HiGHS solver backend. Its archived numerical results are diagnostics, not exact reproductions of the manuscript's reported tables.
 
-| mode | what it answers |
-|---|---|
-| `cross` | 3×3 cross-evaluation (bid made under law i, settled under law j); DA-window position; **simultaneous charge/discharge** overlap; **ε-optimal range** of the DA position (near-tie / degeneracy test) |
-| `seeds` | how often the sign of P1−B2 flips when only the K-scenario draw changes (Clopper–Pearson CI) |
-| `scan`  | all negative-price (or `--all_days`) days: reversal counts with Wilson / Clopper–Pearson CIs, paired block-bootstrap + Wilcoxon |
-| `beta`  | sensitivity to the CVaR weight β |
+See the [repository overview](../README.md) for canonical files and scientific scope, and [data provenance](../data/README.md) for input sources, scaling, and battery-data limitations.
 
-`--exclusive` adds binary charge/discharge exclusivity (MILP). Without it, the LP relaxation can
-simultaneously charge and discharge; inspect the `overlap_MWh` diagnostic before interpreting results.
+## Environment
 
-## Data and Reproduction
+GitHub Actions is configured for Python 3.12–3.14. Install the pinned direct dependencies from the repository root:
 
-From this directory, download and archive the official historical panel:
-
-```powershell
-python download_market_data.py
+```bash
+python -m pip install -r requirements.txt
 ```
 
-Then run the tests and a 1 May cross-evaluation:
+`code/requirements.txt` is a convenience include for this same root dependency list.
 
-```powershell
+## Tests and artifact validation
+
+From this directory:
+
+```bash
 python -m pytest tests -q
-python run_diagnostics.py --panel ..\data\processed\hourly_vpp_panel_2025-12-01_2026-08-21.csv --mode cross --day 2026-05-01 --K 30 --seed 20260821 --exclusive --out ..\data\results\exclusive_milp
+python validate_artifacts.py
 ```
 
-The panel contains DE-LU day-ahead prices from Bundesnetzagentur | SMARD.de and German load, solar, and
-wind series from Fraunhofer ISE Energy-Charts. Source URLs, retrieval date, licenses, series, and hashes
-are recorded in `../data/metadata/`. National physical series are rescaled to the study portfolio.
-This is not battery telemetry: battery size, efficiencies, and aging costs are model parameters.
+The tests exercise core model behavior with synthetic data. Artifact validation checks the archived source hashes, panel coverage, selected reconstruction outputs, parameter-provenance fields, VS Code tasks, and revised manuscript disclosures.
 
-The code uses SciPy's MILP interface. The manuscript's original Pyomo/HiGHS source and exact original
-input/configuration are still needed to reproduce its reported numerical tables. The current reruns are
-archived separately under `../data/results/` and are not substitutes for those tables.
+## Reproduce diagnostics
 
-The panel CSV columns expected by the model are `timestamp, da_price, load, pv, wind` (MW-scaled load,
-PV, and wind); optional `load_fc, pv_fc, wind_fc` can provide forecasts. Without forecast columns,
-48-hour persistence is used. Scenario errors are drawn only from days no later than D−2.
-`synthetic.py` is for smoke tests only; no result from it may be reported as empirical.
+The committed panel and outputs are already archived. To write a fresh exclusive MILP cross-evaluation without overwriting them:
+
+```powershell
+python run_diagnostics.py --panel ..\data\processed\hourly_vpp_panel_2025-12-01_2026-08-21.csv --mode cross --day 2026-05-01 --K 30 --seed 20260821 --exclusive --out ..\data\results\reproduced_milp
+```
+
+Other supported modes (`cross`, `seeds`, `scan`, and `beta`) are listed by `python run_diagnostics.py --help`; the archived commands and interpretations are in [`../data/results/README.md`](../data/results/README.md). The relaxed LP permits simultaneous charge/discharge; use `--exclusive` for the binary MILP and report which formulation produced each result.
+
+## Input data
+
+The model expects the panel columns `timestamp, da_price, load, pv, wind` in the archived CSV under `../data/processed/`. Optional `load_fc, pv_fc, wind_fc` columns provide forecasts. Without them, the reconstruction uses persistence forecasts. Scenario errors are drawn from days no later than D−2. `agingbid/synthetic.py` is for smoke tests only; synthetic outputs are not empirical results.
+
+The default reserve prices are four-hour block values and the default imbalance settlement is a proxy, not observed reBAP. Real-reBAP sensitivity files are separate diagnostics and do not change the default model inputs. No battery telemetry is included.

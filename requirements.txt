@@ -1,5 +1,5 @@
-numpy
-pandas
-scipy
-python-docx
-pytest
+numpy==2.5.2
+pandas==3.0.5
+scipy==1.18.1
+python-docx==1.2.0
+pytest==9.2.0

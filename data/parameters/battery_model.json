@@ -1,5 +1,10 @@
 {
-  "description": "Battery optimization parameters, not a battery telemetry dataset.",
+  "description": "Parameter provenance for the independent reconstruction. This is not a battery telemetry dataset or the original study configuration.",
+  "provenance_legend": {
+    "manuscript_reported": "Value stated in the current manuscript; not independently confirmed against the unavailable original source code.",
+    "not_reported_in_manuscript": "The original manuscript does not specify this value; null means the reconstruction must choose an assumption.",
+    "reconstruction_code_defaults_not_validated_against_original_runs": "Value used by the current reconstruction only; not evidence of the setting used for the manuscript's original reported runs."
+  },
   "manuscript_reported": {
     "power_mw": 2.5,
     "energy_mwh": 5.0,
@@ -11,12 +16,23 @@
     "throughput_cost_eur_per_mwh": 1.5,
     "relcca_calendar_kappa_eur_per_mwh_hour": [0.247, 0.493, 0.822],
     "relcca_band_count": 8,
-    "cell_replacement_cost_eur_per_kwh": 150.0
+    "cell_replacement_cost_eur_per_kwh": 150.0,
+    "generator_power_mw": 1.8,
+    "generator_marginal_cost_eur_per_mwh": 68.0,
+    "generator_ramp_limit_mw_per_hour": 1.2,
+    "cvar_confidence_level": 0.95,
+    "cvar_weight": 0.05,
+    "xu_daily_depth_weights": [0.2, 0.3, 0.3, 0.2],
+    "xu_depth_cost_multipliers_mwh": [10, 40, 80, 120],
+    "aFRR_positive_block_prices_eur_per_mw_hour": [4.5, 12.0, 47.1, 18.4, 35.6, 8.0],
+    "aFRR_negative_block_prices_eur_per_mw_hour": [6.0, 15.0, 36.9, 57.4, 20.0, 2.4]
   },
   "not_reported_in_manuscript": {
     "initial_soc_fraction": null,
     "reserve_sustainment_hours": null,
     "relcca_cycle_gamma_by_band": null,
+    "reserve_cap_aggregation_rule": null,
+    "original_scenario_archive": null,
     "battery_chemistry": null,
     "cell_temperature_series": null,
     "measured_soc_or_degradation_series": null
@@ -29,5 +45,17 @@
     "relcca_gamma_charge_scale_by_band": [0.8, 0.8, 1.0, 1.0, 1.0, 1.2, 1.2, 1.2],
     "relcca_gamma_discharge_scale_by_band": [0.8, 0.8, 1.0, 1.0, 1.0, 1.2, 1.2, 1.2],
     "source": "code/agingbid/core.py defaults; separate charge/discharge vectors currently have equal assumed values, not measured battery data"
-  }
+  },
+  "additional_reconstruction_choices_not_validated_against_original_runs": {
+    "day_ahead_position_bound_mw": 50.0,
+    "relcca_eight_band_kappa_map": [0, 0, 1, 1, 1, 2, 2, 2],
+    "imbalance_short_proxy_parameters": [18.0, 0.12, 5.0],
+    "imbalance_long_proxy_parameters": [10.0, 0.08, 3.0],
+    "reserve_cap_interpretation": "The code applies the 1.5 MW cap separately to upward and downward reserve; the manuscript does not unambiguously establish whether the cap is per direction or aggregate.",
+    "reserve_prices": "Four-hour block means repeated across the hours of each block; not interval-level auction or settlement data.",
+    "imbalance_settlement": "Deterministic proxy in code/agingbid/core.py; not observed reBAP.",
+    "scenario_generation": "Historical daily block resampling with the implementation and seed documented in the diagnostic commands; not the unavailable original scenario archive.",
+    "charge_discharge_exclusivity": "The default LP relaxation allows simultaneous charging and discharging; use --exclusive for the binary MILP."
+  },
+  "empirical_battery_data": null
 }

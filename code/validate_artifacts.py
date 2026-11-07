@@ -44,6 +44,13 @@ assert len(scan_rows) == 20
 
 battery = json.loads((data_dir / "parameters" / "battery_model.json").read_text(encoding="utf-8"))
 assert battery["not_reported_in_manuscript"]["relcca_cycle_gamma_by_band"] is None
+assert battery["empirical_battery_data"] is None
+assert battery["provenance_legend"]["manuscript_reported"]
+assert battery["provenance_legend"]["not_reported_in_manuscript"]
+assert battery["provenance_legend"]["reconstruction_code_defaults_not_validated_against_original_runs"]
+reconstruction_choices = battery["additional_reconstruction_choices_not_validated_against_original_runs"]
+assert {"reserve_cap_interpretation", "reserve_prices", "imbalance_settlement",
+        "scenario_generation", "charge_discharge_exclusivity"} <= reconstruction_choices.keys()
 tasks = json.loads((root / "code" / ".vscode" / "tasks.json").read_text(encoding="utf-8"))
 labels = [task["label"] for task in tasks["tasks"]]
 assert len(labels) == len(set(labels))

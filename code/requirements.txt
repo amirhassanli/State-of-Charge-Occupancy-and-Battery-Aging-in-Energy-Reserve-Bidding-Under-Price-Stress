@@ -1,5 +1,1 @@
-numpy
-pandas
-scipy
-python-docx
-pytest
+-r ../requirements.txt
