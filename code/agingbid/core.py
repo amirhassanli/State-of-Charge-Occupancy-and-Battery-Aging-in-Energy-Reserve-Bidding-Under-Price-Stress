@@ -25,7 +25,7 @@ class Plant:
     rmax: float = 1.5
     tau: float = 1.0            # ASSUMPTION: reserve sustainment hours (value not stated in manuscript)
     thr_cost: float = 1.5
-    beta: float = 0.05; alpha: float = 0.95
+    beta: float = 0.05; alpha: float = 0.90   # ASSUMPTION: CVaR confidence; at K=30, (1-alpha)*K=3 scenarios
     N: int = 8
     kappa_levels: tuple = (0.247, 0.493, 0.822)
     kappa_map: tuple = (0, 0, 1, 1, 1, 2, 2, 2)
