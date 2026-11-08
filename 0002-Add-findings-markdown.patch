@@ -1,0 +1,49 @@
+From 250f73b2cd37b566e84e463ba4057accffaf94fa Mon Sep 17 00:00:00 2001
+From: "Claude (local commit)" <noreply@example.com>
+Date: Sun, 8 Nov 2026 16:28:01 +0000
+Subject: [PATCH 2/2] Add findings markdown
+
+---
+ docs/E_tests_findings.md | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
+ create mode 100644 docs/E_tests_findings.md
+
+diff --git a/docs/E_tests_findings.md b/docs/E_tests_findings.md
+new file mode 100644
+index 0000000..6d57c39
+--- /dev/null
++++ b/docs/E_tests_findings.md
+@@ -0,0 +1,30 @@
++# Findings of the E1–E12 identification tests (reconstruction)
++
++All numbers: repository reconstruction (`code/agingbid/core.py`), 1 May 2026, relaxed LP, K = 30, seed 20260821, unless stated.
++They are not the original model's numbers (the original code and parameters are unavailable). Raw outputs: `code/e_tests/results/`.
++
++## Corrections to the referee text before it is used in the manuscript
++1. **Settlement vs. optimisation (E4).** The 2,703 EUR figure in Table VII compares "optimise under proxy, settle under reBAP" (−1,823.5) with "optimise and settle under reBAP" (+879.96). Those two cells share the settlement model and differ in the *optimisation input*, so 2,703 EUR is not a pure settlement effect. In E4 the reBAP-optimised cell feeds realised reBAP into the scenarios (perfect foresight, LEAKY) and is positive even when settled under the proxy (about +339 EUR).
++2. **Ranking inversion.** ReLCCA is already the lowest law under the proxy in the reconstruction, and the spread among laws under reBAP is a few EUR (E4: about 9 EUR). "Ranking inverts under reBAP" is not supported; "sign reverses when the optimiser sees realised reBAP" is.
++3. **Day-ahead price (F1).** In the code `lam` is scenario-indexed, so day-ahead revenue varies with ω through the price. The referee's replacement sentence (deterministic price) contradicts the code.
++4. **Factor 1.2 (F5).** It is the 12/10 annualisation of the ten-month Keil plateau, not an error.
++
++## Results
++| Test | Result |
++|---|---|
++| E1 reserve cap | per-direction ceiling 1,579.8 EUR/day; aggregate (best direction per hour) 1,014.6. Gap negative under both readings (throughput −321 vs −80). |
++| E2 valuation matrix | B2 positions valued under another law differ by about 1–2 EUR from the diagonal; trough-window positions are near-identical. |
++| E4 settlement 2×2 | proxy→proxy −321/−237/−245; proxy→reBAP −1,928/−1,964/−1,944; LEAKY reBAP→reBAP +848/+839/+845 (thr/xu/relcca). |
++| E5 tau | gap non-monotone: τ=0.5 +355, 1 −321, 2 −113, 4 +340 (throughput). At τ=4 effective r_up ≤ 0.95 MW and aFRR revenue falls from 1,396 to 510 EUR, so the positive gap is not reserve value. Sign change near τ* ≈ 0.76–0.79 h. |
++| E6 value function | no position jump below scale 20 for either κ or c_thr; largest jump between 20× and 50×. |
++| E7 tolerance | 1e-7 vs 1e-9: max difference 9e-13 EUR. ε-optimal window position within ε = 4 EUR spans about 5 MWh. |
++| E8 20-day scan | 2/20 reversals for each law; with λ_R = 0 the gap is exactly 0; energy-side part (gap − aFRR) negative on 20/20 days (mean about −470 EUR). |
++| E9 | equal-cost calibration to 29.5 EUR/day: gaps −257/−239/−236 (spread 21 EUR). TOST ReLCCA−thr, margin ±10 EUR: mean −3.8, 90% block-bootstrap CI [−7.6, +0.8], equivalent. |
++| E10 | price scale ×0.5…×1.5 moves the throughput gap from −793 to +402: sign depends on the reserve price level. |
++| E11 | ±25% load/PV/wind scale leaves all gaps negative. |
++| E12 | all negative for α ∈ {0.90, 0.95}, K ∈ {30, 100}, β ∈ {0, 0.05, 0.2, 0.5}; K = 30 with α = 0.95 has 1.5 tail scenarios. |
++
++## Caveats
++- Reconstruction levels differ from Table IV (B2 wholesale about +4,750 vs −194 EUR); compare gaps, not levels.
++- MILP (exclusive) variants were not run here; Table VII's MILP numbers differ slightly from these LP numbers.
++- E10 auction data (regelleistung.net) and the E4 leak-free reBAP forecast need data the sandbox could not download.
+-- 
+2.43.0
+
