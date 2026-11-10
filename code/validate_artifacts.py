@@ -15,8 +15,10 @@ data_dir = root / "data"
 paper_dir = root / "paper"
 manifest_path = next((data_dir / "metadata").glob("manifest_*.json"))
 manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-panel_path = data_dir / manifest["processed_panel"]["path"]
-assert hashlib.sha256(panel_path.read_bytes()).hexdigest() == manifest["processed_panel"]["sha256"]
+panel_relative_path = manifest["processed_panel"]["path"].replace("\\", "/")
+panel_path = data_dir.joinpath(*panel_relative_path.split("/"))
+panel_bytes = panel_path.read_bytes().replace(b"\r\n", b"\n")
+assert hashlib.sha256(panel_bytes).hexdigest() == manifest["processed_panel"]["sha256"]
 with panel_path.open(newline="", encoding="utf-8") as handle:
     rows = list(csv.DictReader(handle))
 assert len(rows) == manifest["processing"]["usable_hourly_rows"] == 6319
@@ -69,4 +71,14 @@ text = "\n".join(paragraph.text for paragraph in Document(revised).paragraphs)
 assert "new runs do not reproduce the original numerical tables" in text
 assert "must not be substituted for Tables III-VI" in text
 
-print("PASS: raw and processed data hashes, row count, 262 complete days, three diagnostic outputs, battery assumptions, unique tasks, and revised Eq. (1)/disclosures verified.")
+submission = root / "SoC_Occupancy_Aging_Energy_Reserve_Bidding_FINAL_SUBMISSION.docx"
+submission_text = "\n".join(paragraph.text for paragraph in Document(submission).paragraphs)
+assert "LEAKY" in submission_text
+assert "2,703 EUR" not in submission_text
+assert "inverts the aging-law ranking" not in submission_text
+markdown = paper_dir / "FINAL_SUBMISSION.md"
+markdown_text = markdown.read_text(encoding="utf-8")
+assert "LEAKY" in markdown_text
+assert "2,703 EUR" not in markdown_text
+
+print("PASS: raw and processed data hashes, row count, 262 complete days, diagnostic outputs, parameter declarations, task configuration, and manuscript disclosures verified.")
