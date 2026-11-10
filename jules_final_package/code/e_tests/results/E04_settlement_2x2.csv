@@ -1,0 +1,13 @@
+optimise_under,settle_under,law,gap
+proxy,proxy,thr,-321.3466699978371
+proxy,proxy,xu,-236.99047325078664
+proxy,proxy,relcca,-244.702664779752
+proxy,reBAP,thr,-1927.5198593031746
+proxy,reBAP,xu,-1964.2054906414915
+proxy,reBAP,relcca,-1943.8632667383927
+reBAP_realised_LEAKY,proxy,thr,339.1170361101249
+reBAP_realised_LEAKY,proxy,xu,313.742849301947
+reBAP_realised_LEAKY,proxy,relcca,335.0716026094269
+reBAP_realised_LEAKY,reBAP,thr,848.4483789733495
+reBAP_realised_LEAKY,reBAP,xu,839.245384799171
+reBAP_realised_LEAKY,reBAP,relcca,844.5565789941102
