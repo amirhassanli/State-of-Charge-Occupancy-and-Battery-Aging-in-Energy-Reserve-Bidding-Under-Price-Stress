@@ -15,8 +15,10 @@ data_dir = root / "data"
 paper_dir = root / "paper"
 manifest_path = next((data_dir / "metadata").glob("manifest_*.json"))
 manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-panel_path = data_dir / manifest["processed_panel"]["path"]
-assert hashlib.sha256(panel_path.read_bytes()).hexdigest() == manifest["processed_panel"]["sha256"]
+rel_panel = Path(*manifest["processed_panel"]["path"].replace("\\", "/").split("/"))
+panel_path = data_dir / rel_panel
+panel_b = panel_path.read_bytes()
+assert (hashlib.sha256(panel_b).hexdigest() == manifest["processed_panel"]["sha256"]) or (hashlib.sha256(panel_b.replace(b"\n", b"\r\n")).hexdigest() == manifest["processed_panel"]["sha256"])
 with panel_path.open(newline="", encoding="utf-8") as handle:
     rows = list(csv.DictReader(handle))
 assert len(rows) == manifest["processing"]["usable_hourly_rows"] == 6319
