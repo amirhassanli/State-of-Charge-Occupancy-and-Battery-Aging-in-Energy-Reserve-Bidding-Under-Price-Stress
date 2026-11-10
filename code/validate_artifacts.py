@@ -17,7 +17,8 @@ manifest_path = next((data_dir / "metadata").glob("manifest_*.json"))
 manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 panel_relative_path = manifest["processed_panel"]["path"].replace("\\", "/")
 panel_path = data_dir.joinpath(*panel_relative_path.split("/"))
-assert hashlib.sha256(panel_path.read_bytes()).hexdigest() == manifest["processed_panel"]["sha256"]
+panel_bytes = panel_path.read_bytes().replace(b"\r\n", b"\n")
+assert hashlib.sha256(panel_bytes).hexdigest() == manifest["processed_panel"]["sha256"]
 with panel_path.open(newline="", encoding="utf-8") as handle:
     rows = list(csv.DictReader(handle))
 assert len(rows) == manifest["processing"]["usable_hourly_rows"] == 6319

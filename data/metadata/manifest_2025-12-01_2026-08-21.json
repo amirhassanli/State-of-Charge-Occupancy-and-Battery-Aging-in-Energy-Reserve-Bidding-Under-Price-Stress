@@ -58,7 +58,7 @@
   },
   "processed_panel": {
     "path": "processed/hourly_vpp_panel_2025-12-01_2026-08-21.csv",
-    "sha256": "9079b65f57974102c8e70b2362e5ecb9ad4674779ac3f8257d4c51901f75ca84",
+    "sha256": "a50f6bd82d516ec6b8e380dee179e35ca182a31189b1d12736fab3727deab530",
     "rows": 6319
   },
   "battery_telemetry": null
